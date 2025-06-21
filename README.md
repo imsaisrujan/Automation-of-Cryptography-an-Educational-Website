@@ -23,9 +23,9 @@ Welcome to this repository showcasing a Music Store Application built using the 
 - Libraries: Express, Mongoose, bcrypt, jsonwebtoken
 - Task: Handle user authentication, manage music albums, and process orders.
 - Features:
-- RESTful API for CRUD operations on albums.
-- User authentication with JWT.
-- Database interactions with MongoDB.
+    - RESTful API for CRUD operations on albums.
+    - User authentication with JWT.
+    - Database interactions with MongoDB.
   
 ---
 
