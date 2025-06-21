@@ -8,44 +8,24 @@
 
 ## 🚀 Project Highlights
 
-✅ Interactive demonstrations of cryptographic algorithms
-✅ Visualization of encryption/decryption processes
-✅ Support for various cryptographic schemes (e.g., symmetric, asymmetric, hashing)
-✅ Clear and concise explanations of concepts
-✅ User-friendly web interface
-✅ Educational resource for self-learning
+- ✅ Interactive demonstrations of cryptographic algorithms
+- ✅ Visualization of encryption/decryption processes
+- ✅ Support for various cryptographic schemes (e.g., symmetric, asymmetric, hashing)
+- ✅ Clear and concise explanations of concepts
+- ✅ User-friendly web interface
+- ✅ Educational resource for self-learning
 
 ---
 
 ## 📁 Repository Structure
-Automation-of-Cryptography-an-Educational-Website/
-├── [backend_folder]/                 # e.g., `app`, `src`, `server` - where your server-side code lives
-│   ├── [main_app_file].py/.js        # e.g., `app.py`, `index.js`
-│   ├── [crypto_modules]/             # Implementations of crypto algorithms
-│   └── requirements.txt              # Backend dependencies (if Python/Node.js)
-├── [frontend_folder]/                # e.g., `public`, `client`, `src` - where your web assets are
-│   ├── index.html                    # Main entry point for the website
-│   ├── [js_folder]/                  # JavaScript files for interactivity
-│   ├── [css_folder]/                 # CSS/Styling files
-│   └── package.json                  # Frontend dependencies (if applicable, e.g., React/Vue)
-├── assets/                           # Images, diagrams, screenshots
-│   ├── [screenshot_dashboard.png]
-│   └── [aes_demo.gif]
-├── DEPLOYMENT.md                     # Optional: Instructions for deployment
-├── LICENSE                           # Project license file
-└── README.md                         # This README file
 
 ## 🧑‍💻 Technologies Used
 
 | Tool / Library       | Purpose                                   |
 |----------------------|-------------------------------------------|
-| Python 3.x           | Backend logic, cryptographic operations   |
-| Flask / Django       | Web framework (if Python backend)         |
-| Node.js / Express    | Web server (if Node.js backend)           |
 | HTML5, CSS3, JavaScript | Frontend web development                 |
-| [Frontend Framework] | e.g., React, Vue.js, jQuery (if used)     |
 | [Crypto Libraries]   | e.g., `cryptography`, `PyCryptodome` (Python) / `Web Crypto API` (JS) |
-| [Database]           | e.g., SQLite, PostgreSQL (if data persistence is needed) |
+| [Database]           | e.g., MySQL |
 | Git                  | Version control                           |
 
 **NOTE:** Please fill in the `[Frontend Framework]`, `[Crypto Libraries]`, and `[Database]` with the specific technologies you used. If you didn't use a specific framework or database, you can remove that row.
