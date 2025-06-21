@@ -2,8 +2,8 @@
 # 🔒 Automation of Cryptography - An Educational Website
 
 Welcome to the Automation of Cryptography project, an educational website designed to help users understand various cryptographic techniques and algorithms. This project provides interactive tools and resources for learning about cryptography.
----
 
+---
 ## 📁 Project Structure
 
 
