@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Substitution Techniques</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        .toolbar {
+            color: black;
+            padding: 5px;
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            z-index: 2;
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: transparent;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background: transparent;
+        }
+        .left-section {
+            width: 50%;
+            height: 100vh;
+            background-color: #A9A9A9;
+            float: left;
+            transition: width 0.5s;
+        }
+        .right-section {
+            width: 50%;
+            height: 100vh;
+            background-color: #000000;
+            float: right;
+            cursor: move;
+            transition: width 0.5s, right 0.5s;
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .symbol {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.5s, right 0.5s;
+            right: 46.5%;
+        }
+        .symbol img {
+            width: 24px;
+            height: 24px;
+        }
+        .text-container {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: 20px;
+            max-width: 80%;
+            margin: 125px auto 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .text-container img {
+            max-width: 100%;
+            height: 200px;
+        }
+        .text-container.condensed {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .text-container.slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        .black-container {
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+            transition: max-width 0.5s;
+        }
+
+        .black-container button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .black-container button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+		.new-container {
+            flex: 1;
+			color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            transition: max-width 0.5s;
+            margin: 10px;
+			
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/logo.png" alt="AOC Logo" height="80px"></a>
+    </header>
+    <div class="toolbar">
+        <div class="dropdown">
+            <button id="techniques" class="dropbtn"><b>Cipher Techniques</b></button>
+            <div class="dropdown-content">
+                <a href="./transposition.html">Transposition Techniques</a>
+                <a href="./modern.html">Modern Techniques</a>
+            </div>
+        </div>
+        <button id="tool">
+            <a href="./tool.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit;">
+                <b>Cipher Tool</b>
+            </a>
+        </button>
+    </div>
+    <div class="left-section">
+        <div class="text-container slab">
+            <h1>Substitution Techniques</h1>
+            <p>Substitution technique is a classical encryption approach where the characters present in the initial message are restored by the other characters or numbers or by symbols. If the plain text (original message) is treated as the string of bits, thus the substitution technique would restore bit pattern of plain text with the bit pattern of cipher text.</p>
+        </div>
+    </div>
+    <div id="right-section" class="right-section" draggable="true">
+        <div class="black-container">
+            <h2>Types of Substitution Techniques</h2>
+            <button id="monoalphabetic">MonoAlphabetic Cipher</button>
+            <button id="caesar">Caesar Cipher</button>
+            <button id="polyalphabetic">PolyAlphabetic Cipher</button>
+            <button id="playfair">PlayFair Cipher</button>
+            <button id="hill">Hill Cipher</button>
+        </div>
+        <div class="new-container" id="monoalphabetic-content">
+            <h1>MonoAlphabetic Cipher</h1>
+            <p>Monoalphabetic cipher is a type of encryption technique in cryptography where each character of the plain text is mapped to another fixed character of the cipher text. </p>
+            <a href="./MonoAlphabeticCipher.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit; float:right">Read More</a>
+		</div>
+        <div class="new-container" id="caesar-content">
+            <h1>Caesar Cipher</h1>
+            <p>The Caesar cipher is one of the simplest and most widely known cryptography techniques. It is a type of substitution cipher in which each letter in the plaintext is shifted a certain number of places down or up the alphabet.</p>
+            <a href="./CaesarCipher.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit; float:right">Read More</a>
+        </div>
+        <div class="new-container" id="polyalphabetic-content">
+            <h1>PolyAlphabetic Cipher</h1>
+            <p>The Polyalphabetic cipher is a substitution cipher in which the plaintext letters are encrypted using multiple alphabets. This provides a higher level of security compared to simpler ciphers like the Caesar cipher..</p>
+            <a href="./PolyAlphabeticCipher.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit; float:right">Read More</a>
+        </div>
+        <div class="new-container" id="playfair-content">
+            <h1>PlayFair Cipher</h1>
+            <p>The Playfair Cipher is a manual symmetric encryption technique and was the first literal digraph substitution cipher. It was invented in 1854 by Charles Wheatstone but was named after Lord Playfair who promoted its use. It was used for tactical purposes by British forces in the Second Boer War and the First World War and was also used by the Australian Army during World War II.</p>
+            <a href="./PlayFairCipher.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit; float:right">Read More</a>
+        </div>
+        <div class="new-container" id="hill-content">
+            <h1>Hill Cipher</h1>
+            <p>The Hill Cipher is a polygraphic substitution cipher based on linear algebra. It was invented by Lester S. Hill in 1929 and is one of the first known examples of encryption to use a matrix.</p>
+            <a href="./HillCipher.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit; float:right">Read More</a>
+        </div>
+    </div>
+    <div class="symbol" onclick="toggleWidth()">
+        <img src="./Images/mouse.png" alt="Mouse Icon">
+    </div>
+
+    <script>
+        let rightSection = document.getElementById('right-section');
+        let symbol = document.querySelector('.symbol');
+        let isExpanded = false;
+
+        function toggleWidth() {
+            if (isExpanded) {
+                document.querySelector('.left-section').style.width = '50%';
+                rightSection.style.width = '50%';
+                rightSection.style.right = '0';
+                symbol.style.right = '46.5%';
+                document.querySelector('.black-container').style.maxWidth = '70%';
+                document.querySelectorAll('.new-container').forEach(container => {
+                    container.style.display = 'none';
+                });
+            } else {
+                document.querySelector('.left-section').style.width = '25%';
+                rightSection.style.width = '75%';
+                rightSection.style.right = '0';
+                symbol.style.right = '71.5%';
+                document.querySelector('.black-container').style.maxWidth = '50%';
+            }
+            isExpanded = !isExpanded;
+        }
+
+        let buttons = document.querySelectorAll('.black-container button');
+        let containers = document.querySelectorAll('.new-container');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                containers.forEach(container => {
+                    container.style.display = 'none';
+                });
+                let id = button.getAttribute('id');
+                document.getElementById(id + '-content').style.display = 'block';
+                document.querySelector('.black-container').style.maxWidth = '50%';
+                document.querySelector('.left-section').style.width = '25%';
+                rightSection.style.width = '75%';
+                rightSection.style.right = '0';
+                symbol.style.right = '71.5%';
+            });
+        });
+
+    </script>
+</body>
+</html>

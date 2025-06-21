@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One-Time Pad</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html,body{
+            overflow-x: hidden; 
+            overflow-y: auto;
+            scrollbar-width: auto;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        .toolbar {
+            color: black;
+            padding: 5px;
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            z-index: 2;
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: transparent;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background: transparent;
+        }
+        .left-section {
+            width: 50%;
+            height: 270vh;
+            background-color: #A9A9A9;
+            float: left;
+        }
+        .right-section {
+            width: 50%;
+            height: 270vh;
+            background-color: #000000;
+            float: right;
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .text-container {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: 20px;
+            max-width: 80%;
+            margin: 125px auto 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .text-container img {
+            max-width: 100%;
+            height: 250px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .text-container.condensed {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .text-container.slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        .black-container {
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            transition: max-width 0.5s;
+            text-align: left;
+            position: relative;
+            margin-top: 100px;
+        }
+
+        .black-container button {
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .black-container button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+		.new-container {
+            flex: 1;
+			color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            transition: max-width 0.5s;
+            margin: 10px;
+			overflow-y: hidden; 
+			overflow-x: hidden;
+			scrollbar-width: thin; 
+			scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        .textArea{
+            width: 100%; 
+            height: 1550px; 
+            resize: none; 
+            border: none; 
+            overflow: auto; 
+            padding: 10px; 
+            font-family: monospace; 
+            display: block; 
+            white-space: nowrap; 
+            color: white; 
+            background-color: #000000;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            color: white;
+        }
+        td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/logo.png" alt="AOC Logo" height="80px"></a>
+    </header>
+    <div class="toolbar">
+        <div class="dropdown">
+            <button id="techniques" class="dropbtn"><b>Cipher Techniques</b></button>
+            <div class="dropdown-content">
+                <a href="./substitution.html">Substitution Techniques</a>
+                <a href="./transposition.html">Transposition Techniques</a>
+                <a href="./modern.html">Modern Techniques</a>
+            </div>
+        </div>
+        <button id="tool">
+            <a href="./tool.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit;">
+                <b>Cipher Tool</b>
+            </a>
+        </button>
+    </div>
+    <div class="left-section">
+        <div class="text-container slab">
+            <h1>One-Time Pad</h1>
+            <p>In cryptography, a one-time pad is a system in which a randomly generated private key is used only once to encrypt a message that is then decrypted by the receiver using a matching one-time pad and key.</p>
+            <p>Messages encrypted with keys based on randomness have the advantage that there is theoretically no way to break the code by analyzing a succession of messages. Each encryption is unique and bears no relation to the next encryption, making it impossible to detect a pattern. But with a one-time pad, the decrypting party must have access to the same key used to encrypt the message; this raises the issue of how to get the key to the decrypting party safely, or how to keep both keys secure.</p>
+            <p>One-time pads have been used when both parties started out at the same physical location and then separated, each with knowledge of the keys in the one-time pad. The key used in a one-time pad is called a secret key because if it is revealed, the messages encrypted with it can be deciphered easily. One-time pads figured prominently in secret message transmission and espionage before and during World War II and in the Cold War era. On the internet, the difficulty of securely controlling secret keys led to the invention of public key cryptography.</p>
+            <h3>How does One-Time Pad Work?</h3>
+            <h4>Encryption:</h4>
+            <ol>
+                <li>Generate a truly random key that is the same length as the plaintext.</li>
+                <li>Convert both the plaintext and key into binary form.</li>
+                <li>XOR (exclusive OR) each bit of the plaintext with the corresponding bit of the key.</li>
+                <li>The result of the XOR operation is the ciphertext.</li>
+            </ol>
+            <img src="./Images/otp1.png">
+            <p style="text-align:center">This example shows how a one-time pad works.</p>
+            <h4>Decryption:</h4>
+            <ol>
+                <li>Obtain the ciphertext and the random key used for encryption.</li>
+                <li>Convert both the ciphertext and key into binary form.</li>
+                <li>XOR (exclusive OR) each bit of the ciphertext with the corresponding bit of the key.</li>
+                <li>The result of the XOR operation is the original plaintext.</li>
+            </ol>
+            <h4>Example Input (Plain-text)– HELLO</h4>
+            <h4>KEY -MONEY</h4>
+            <p>Explanation: Converting the Plain text — H E L L O = 7 4 11 11 14</p><p>Converting the Key — M O N E Y = 12 14 13 4 24</p><p>Plain text + key = 19 18 24 15 38 </p><p>Upon converting back the (Plain Text + Key) we get the Cipher Text  i.e. </p><p>19 18 24 15 12 = T S Y P M  </p>
+
+            <h4>Example Output (Cipher-text)– TSYPM</h4>
+        </div>
+    </div>
+    <div id="right-section" class="right-section">
+        <div class="black-container">
+            <h2 style="margin-right: auto; margin-bottom: 0; margin-top: 0;">Java Implementation</h2>
+            <button id="copyButton" onclick="copyCode()" style="margin-left: auto; margin-top: 0; margin-bottom: 0;">Copy Code</button>
+            <textarea id="codeTextarea" class="textArea">
+import java.util.Random;
+import java.util.Scanner;
+
+public class OneTimePad 
+{
+
+    public static String generateKey(int length) 
+    {
+        Random random = new Random();
+        StringBuilder key = new StringBuilder(length);
+        for (int i = 0; i < length; i++) 
+        {
+            char randomChar = (char) (random.nextInt(26) + 'A');
+            key.append(randomChar);
+        }
+        return key.toString();
+    }
+
+    public static String encrypt(String plaintext, String key) 
+    {
+        StringBuilder ciphertext = new StringBuilder(plaintext.length());
+        for (int i = 0; i < plaintext.length(); i++) 
+        {
+            char encryptedChar = (char) (((plaintext.charAt(i) - 'A') + (key.charAt(i) - 'A')) % 26 + 'A');
+            ciphertext.append(encryptedChar);
+        }
+        return ciphertext.toString();
+    }
+
+    public static String decrypt(String ciphertext, String key) 
+    {
+        StringBuilder plaintext = new StringBuilder(ciphertext.length());
+        for (int i = 0; i < ciphertext.length(); i++) 
+        {
+            char decryptedChar = (char) (((ciphertext.charAt(i) - 'A') - (key.charAt(i) - 'A') + 26) % 26 + 'A');
+            plaintext.append(decryptedChar);
+        }
+        return plaintext.toString();
+    }
+
+    public static void main(String[] args) 
+    {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter your choice (encrypt or decrypt):");
+        String choice = sc.nextLine().toLowerCase();
+        if ("encrypt".equals(choice))
+        {
+            System.out.println("Enter the plaintext:");
+            String plaintext = sc.nextLine().toUpperCase();
+
+            String key = generateKey(plaintext.length());
+            System.out.println("Generated Key: " + key);
+
+            String ciphertext = encrypt(plaintext, key);
+            System.out.println("Encrypted Text: " + ciphertext);
+        }
+        else if ("decrypt".equals(choice))
+        {
+            System.out.println("Enter the ciphertext:");
+            String plaintext = sc.nextLine().toUpperCase();
+
+            System.out.println("Enter the Key:");
+            String key = sc.nextLine().toUpperCase();
+
+            String decryptedText = decrypt(plaintext, key);
+            System.out.println("Decrypted Text: " + decryptedText);
+        }
+
+    }
+}
+
+            </textarea>
+        </div>
+    </div>
+    <script>
+        function copyCode() {
+            var codeTextarea = document.getElementById('codeTextarea');
+            var code = codeTextarea.value;
+
+            navigator.clipboard.writeText(code).then(function() {
+                var copyButton = document.getElementById('copyButton');
+                copyButton.innerText = "Code Copied";
+
+                setTimeout(function() {
+                    copyButton.innerText = 'Copy Code';
+                }, 2000);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>            
+</body>
+</html>

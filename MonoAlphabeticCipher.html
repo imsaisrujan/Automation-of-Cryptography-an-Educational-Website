@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MonoAlphabetic Cipher</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html,body{
+            overflow-x: hidden;
+            overflow-y: auto;
+            scrollbar-width: auto;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        .toolbar {
+            color: black;
+            padding: 5px;
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            z-index: 2;
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: transparent;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background: transparent;
+        }
+        .left-section {
+            width: 50%;
+            height: 190vh;
+            background-color: #A9A9A9;
+            float: left;
+        }
+        .right-section {
+            width: 50%;
+            height: 190vh;
+            background-color: #000000;
+            float: right;
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .text-container {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: 20px;
+            max-width: 80%;
+            margin: 125px auto 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .text-container img {
+            max-width: 100%;
+            height: 250px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .text-container.condensed {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .text-container.slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        .black-container {
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            transition: max-width 0.5s;
+            text-align: left;
+            position: relative;
+            margin-top: 100px;
+        }
+
+        .black-container button {
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .black-container button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+		.new-container {
+            flex: 1;
+			color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            transition: max-width 0.5s;
+            margin: 10px;
+			overflow-y: hidden; 
+			overflow-x: hidden;
+			scrollbar-width: thin; 
+			scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        .textArea{
+            width: 100%; 
+            height: 1060px; 
+            resize: none; 
+            border: none; 
+            overflow: auto; 
+            padding: 10px; 
+            font-family: monospace; 
+            display: block; 
+            white-space: nowrap; 
+            color: white; 
+            background-color: #000000;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            color: white;
+        }
+        td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/logo.png" alt="AOC Logo" height="80px"></a>
+    </header>
+    <div class="toolbar">
+        <div class="dropdown">
+            <button id="techniques" class="dropbtn"><b>Cipher Techniques</b></button>
+            <div class="dropdown-content">
+                <a href="./substitution.html">Substitution Techniques</a>
+                <a href="./transposition.html">Transposition Techniques</a>
+                <a href="./modern.html">Modern Techniques</a>
+            </div>
+        </div>
+        <button id="tool">
+            <a href="./tool.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit;">
+                <b>Cipher Tool</b>
+            </a>
+        </button>
+    </div>
+    <div class="left-section">
+        <div class="text-container slab">
+            <h1>MonoAlphabetic Cipher</h1>
+            <p>The specific form of substitution cipher is the Monoalphabetic Substitution Cipher, is known as “Simple Substitution Cipher”. Monoalphabetic Substitution Ciphers based on an individual key mapping function K, which consistently replaces a specific character α with a character from the mapping K (α).</p>
+            <p>A mono-alphabetic substitution cipher is a type of substitution ciphers in which the equivalent letters of the plaintext are restored by the same letters of the ciphertext. Mono, which defines one, it signifies that each letter of the plaintext has a single substitute of the ciphertext.</p>
+            <p>Mono-alphabetic cipher is a type of substitution where the relationship among a symbol in the plaintext and a symbol in the cipher text is continually one-to-one and it remains fixed throughout the encryption process.</p>
+            <p>These ciphers are considered largely susceptible to cryptanalysis. For instance, if ‘T’ is encrypted by ‘J’ for any number of appearance in the plain text message, then ‘T’ will continually be encrypted to ‘J’.</p>
+            <p>If the plaintext is “TREE”, thus the cipher text can be “ADOO” and this showcases that the cipher is possibly mono-alphabetic as both the “O”s in the plaintext are encrypted with “E”s in the cipher text.</p>
+            <p>In Monoalphabetic cipher, the substitute characters symbols supports a random permutation of 26 letters of the alphabet. 26! Permutations of the alphabet go up to 4*10^26. This creates it complex for the hacker to need brute force attack to gain the key.</p>
+            <h3>How does MonoAlphabeticCipher Work?</h3>
+            <table border="1">
+                <tr>
+                    <td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td>
+                </tr>
+                <tr>
+                    <td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td><td>I</td><td>J</td><td>K</td><td>L</td><td>M</td>
+                </tr>
+                <tr>
+                    <td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td>
+                </tr>
+                <tr>
+                    <td>Z</td><td>Y</td><td>X</td><td>W</td><td>V</td><td>U</td><td>T</td><td>S</td><td>R</td><td>Q</td><td>P</td><td>O</td><td>N</td>
+                </tr>
+            </table>
+            <h4>Example Input (Plain-text)– AOC</h4>
+            <p>Explanation: In Monoalphabetic cipher, the mapping is done randomly and the difference between the letters is not uniform. Here, A is mapped to Z (A->Z), O is mapped to L(O->L) and C is mapped to X (C->X).</p>
+            <h4>Example Output (Cipher-text)– ZLX</h4>
+        </div>
+    </div>
+    <div id="right-section" class="right-section">
+        <div class="black-container">
+            <h2 style="margin-right: auto; margin-bottom: 0; margin-top: 0;">Java Implementation</h2>
+            <button id="copyButton" onclick="copyCode()" style="margin-left: auto; margin-top: 0; margin-bottom: 0;">Copy Code</button>
+            <textarea id="codeTextarea" class="textArea">
+import java.util.*;
+class MonoAlphabeticcipher
+{
+    public static char p[]= {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+    public static char ch[]={ 'z','y','x','w','v','u','t','s','r','q','p','o','n','m','l','k','j','i','h','g','f','e','d','c','b','a'};
+    Scanner sc=new Scanner(System.in);
+    public  static String doEncryption(String s)
+    {
+    char c[]=new char[10];
+    int l=s.length();
+    for(int i=0;i<l;i++)
+    {
+        for(int j=0;j<26;j++)
+        {
+            if(p[j]==s.charAt(i))
+                {
+                    c[i]=ch[j];
+                    break;
+                }
+            }
+        }
+        return(new String(c));
+    }
+    public static String doDecryption(String s)
+    {
+        char c[]=new char[10];
+        int l=s.length();
+        for(int i=0;i<l;i++)
+        {
+            for(int j=0;j<26;j++)
+            {
+                if(ch[j]==s.charAt(i))
+                {
+                    c[i]=p[j];
+                    break;
+                }
+            }
+        }
+        return(new String(c));
+    }
+    public static void encryption(String gtx)
+    {
+        String etx=doEncryption(gtx);
+        System.out.println("Encrypted text is: "+etx);
+    }
+    public static void decryption(String gtx)
+    {
+        String etx=doDecryption(gtx);
+        System.out.println("Decrypted text is: "+etx);
+    }
+    public static void main(String args[])
+    {
+        Scanner sc=new Scanner(System.in);
+        System.out.println("Enter your choice (encrypt or decrypt)");
+        String choice = (sc.nextLine()).toLowerCase();
+        System.out.println("Enter the string:");
+        String gtx=sc.next().toLowerCase();
+        if ("encrypt".equals(choice)) 
+        {
+            encryption(gtx);
+        }
+        else if ("decrypt".equals(choice)) 
+        {
+            decryption(gtx);
+        }
+    }
+}
+            </textarea>
+        </div>
+    </div>
+    <script>
+        function copyCode() {
+            var codeTextarea = document.getElementById('codeTextarea');
+            var code = codeTextarea.value;
+
+            navigator.clipboard.writeText(code).then(function() {
+                var copyButton = document.getElementById('copyButton');
+                copyButton.innerText = "Code Copied";
+
+                setTimeout(function() {
+                    copyButton.innerText = 'Copy Code';
+                }, 2000);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>            
+</body>
+</html>

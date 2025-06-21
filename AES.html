@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Encryption Standard(AES)</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html,body{
+            overflow-x: hidden;
+            overflow-y: auto;
+            scrollbar-width: auto;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        .toolbar {
+            color: black;
+            padding: 5px;
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            z-index: 2;
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: transparent;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background: transparent;
+        }
+        .left-section {
+            width: 60%;
+            height: 550vh;
+            background-color: #A9A9A9;
+            float: left;
+        }
+        .right-section {
+            width: 40%;
+            height: 550vh;
+            background-color: #000000;
+            float: right;
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .text-container {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: 20px;
+            max-width: 80%;
+            margin: 125px auto 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .text-container img {
+            max-width: 100%;
+            height: 250px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .text-container.condensed {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .text-container.slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        .black-container {
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            transition: max-width 0.5s;
+            text-align: left;
+            position: relative;
+            margin-top: 100px;
+        }
+
+        .black-container button {
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .black-container button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+		.new-container {
+            flex: 1;
+			color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            transition: max-width 0.5s;
+            margin: 10px;
+			overflow-y: hidden; 
+			overflow-x: hidden;
+			scrollbar-width: thin; 
+			scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        .textArea{
+            width: 100%; 
+            height: 1500px; 
+            resize: none; 
+            border: none; 
+            overflow: auto; 
+            padding: 10px; 
+            font-family: monospace; 
+            display: block; 
+            white-space: nowrap; 
+            color: white; 
+            background-color: #000000;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            color: white;
+        }
+        td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/logo.png" alt="AOC Logo" height="80px"></a>
+    </header>
+    <div class="toolbar">
+        <div class="dropdown">
+            <button id="techniques" class="dropbtn"><b>Cipher Techniques</b></button>
+            <div class="dropdown-content">
+                <a href="./substitution.html">Substitution Techniques</a>
+                <a href="./transposition.html">Transposition Techniques</a>
+                <a href="./modern.html">Modern Techniques</a>
+            </div>
+        </div>
+        <button id="tool">
+            <a href="./tool.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit;">
+                <b>Cipher Tool</b>
+            </a>
+        </button>
+    </div>
+    <div class="left-section">
+        <div class="text-container slab">
+            <h1>Advanced Encryption Standard(AES)</h1>
+            <p>Advanced Encryption Standard (AES) is a specification for the encryption of electronic data established by the U.S National Institute of Standards and Technology (NIST) in 2001. AES is widely used today as it is a much stronger than DES and triple DES despite being harder to implement.</p>
+            <ul>
+                <li>AES is a block cipher.</li>
+                <li>The key size can be 128/192/256 bits.</li>
+                <li>Encrypts data in blocks of 128 bits each.</li>
+            </ul>
+            <p>That means it takes 128 bits as input and outputs 128 bits of encrypted cipher text as output. AES relies on substitution-permutation network principle which means it is performed using a series of linked operations which involves replacing and shuffling of the input data.</p>
+            <p>The number of rounds depends on the key length as follows :</p>
+            <ul>
+                <li>128 bit key – 10 rounds</li>
+                <li>192 bit key – 12 rounds</li>
+                <li>256 bit key – 14 rounds</li>
+            </ul>
+            <h4>Creation of Round keys :</h4>
+            <p>A Key Schedule algorithm is used to calculate all the round keys from the key. So the initial key is used to create many different round keys which will be used in the corresponding round of the encryption.</p>
+            <img src="./Images/aes1.png">
+            <p style="text-align:center"></p>
+            <h3>How Does AES work?</h3>
+            <h3>Encryption:</h3>
+            <p>AES considers each block as a 16 byte (4 byte x 4 byte = 128 ) grid in a column major arrangement.</p>
+            <pre>
+                <strong>    [b0]  |  [b1]  |  [b2]   |  [b3]   </strong>
+                <strong>    [b4]  |  [b5]  |  [b6]   |  [b7]   </strong>
+                <strong>    [b8]  |  [b9]  |  [b10]  |  [b11]   </strong>
+                <strong>    [b12] |  [b13] |  [b14]  |  [b15]   </strong>
+            </pre>
+            <p>Each round comprises of 4 steps :</p>
+            <ul>
+                <li>SubBytes</li>
+                <li>ShiftRows</li>
+                <li>MixColumns</li>
+                <li>Add Round Key</li>
+            </ul>
+            <p>The last round doesn’t have the MixColumns round.</p>
+            <p>The SubBytes does the substitution and ShiftRows and MixColumns performs the permutation in the algorithm.</p>
+            <h4>SubBytes  :</h4>
+            <p>In this step each byte is substituted by another byte. Its performed using a lookup table also called the S-box. This substitution is done in a way that a byte is never substituted by itself and also not substituted by another byte which is a compliment of the current byte. The result of this step is a 16 byte (4 x 4 ) matrix like before.</p>
+            <h4>ShiftRows :</h4>
+            <p>This step is just as it sounds. Each row is shifted a particular number of times.</p>
+            <ul>
+                <li>The first row is not shifted</li>
+                <li>The second row is shifted once to the left.</li>
+                <li>The third row is shifted twice to the left.</li>
+                <li>The fourth row is shifted thrice to the left.</li>
+            </ul>
+            <pre style="float: left;">
+                <strong>[b0]  |  [b1]  |  [b2]  |  [b3]     [b0]  |  [b1]  |  [b2]   | [b3] </strong>
+                <strong>[b4]  |  [b5]  |  [b6]  |  [b7]  -> [b5]  |  [b6]  |  [b7]   | [b4]</strong>
+                <strong>[b8]  |  [b9]  |  [b10] |  [b11]    [b10] |  [b11] |  [b8]   | [b9]</strong>
+                <strong>[b12] |  [b13] |  [b14] |  [b15]    [b15] |  [b12] |  [b13]  | [b14]</strong>
+            </pre>
+            <p>(A left circular shift is performed.)</p>
+            <h4>MixColumns :</h4>
+            <p>This step is basically a matrix multiplication. Each column is multiplied with a specific matrix and thus the position of each byte in the column is changed as a result.</p>
+            <pre>
+                <strong>    [ c0 ]         [ 2  3  1  1 ]  [ b0 ]   </strong>
+                <strong>    [ c1 ]  =      [ 1  2  3  1 ]  [ b1 ]  </strong>
+                <strong>    [ c2 ]         [ 1  1  2  3 ]  [ b2 ]  </strong>
+                <strong>    [ c3 ]         [ 3  1  1  2 ]  [ b3 ]   </strong>
+            </pre>
+            <h4>Add Round Keys :</h4>
+            <p>Now the resultant output of the previous stage is XOR-ed with the corresponding round key. Here, the 16 bytes is not considered as a grid but just as 128 bits of data.</p>
+            <img src="./Images/aes2.png">
+            <p>After all these rounds 128 bits of encrypted data is given back as output. This process is repeated until all the data to be encrypted undergoes this process.</p>
+            <h3>Decryption :</h3>
+            <p>The stages in the rounds can be easily undone as these stages have an opposite to it which when performed reverts the changes.Each 128 blocks goes through the 10,12 or 14 rounds depending on the key size.</p>
+            <p>The stages of each round in decryption is as follows :</p>
+            <ul>
+                <li>Add round key</li>
+                <li>Inverse MixColumns</li>
+                <li>ShiftRows</li>
+                <li>Inverse SubByte</li>
+            </ul>
+            <p>The decryption process is the encryption process done in reverse so i will explain the steps with notable differences.</p>
+            <h4>Inverse MixColumns :</h4>
+            <p> This step is similar to the MixColumns step in encryption, but differs in the matrix used to carry out the operation.</p>
+            <pre>
+                <strong>    [ c0 ]         [ 14  11  13  9  ]  [ b0 ]   </strong>
+                <strong>    [ c1 ]  =      [ 9   14  11  13 ]  [ b1 ]  </strong>
+                <strong>    [ c2 ]         [ 13  9   14  11 ]  [ b2 ]  </strong>
+                <strong>    [ c3 ]         [ 11  13  9   14 ]  [ b3 ]   </strong>
+            </pre>
+            <h4>Inverse SubBytes :</h4>
+            <p>Inverse S-box is used as a lookup table and using which the bytes are substituted during decryption.</p>
+            <h4>Example Input (Plain-text)- IAMABOY</h4>
+            <h4>KEY - 74D81A022395781E774DFA098D0505C8</h4>
+            <h4>Example Output (Cipher-text)–  EfKTSb8V87yMedhfV/W9dw==(Base64)</h4>
+        </div>
+    </div>
+    <div id="right-section" class="right-section">
+        <div class="black-container">
+            <h2 style="margin-right: auto; margin-bottom: 0; margin-top: 0;">Java Implementation</h2>
+            <button id="copyButton" onclick="copyCode()" style="margin-left: auto; margin-top: 0; margin-bottom: 0;">Copy Code</button>
+            <textarea id="codeTextarea" class="textArea">
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+import java.util.Scanner;
+
+public class AesEncryption 
+{
+
+    public static void main(String[] args) throws Exception 
+    {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter your choice (encrypt or decrypt):");
+        String choice = scanner.nextLine().toLowerCase();
+
+        System.out.println("Enter the key (leave blank to generate a new key):");
+        String keyInput = scanner.nextLine();
+
+        byte[] key;
+        if (keyInput.isEmpty()) 
+        {
+            KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+            keyGen.init(128); 
+            SecretKey secretKey = keyGen.generateKey();
+            key = secretKey.getEncoded();
+            System.out.println("Generated Key (Hex): " + bytesToHex(key));
+        } 
+        else 
+        {
+            key = hexStringToByteArray(keyInput);
+            System.out.println("Using provided Key (Hex): " + bytesToHex(key));
+        }
+
+        if ("encrypt".equals(choice)) 
+        {
+            System.out.println("Enter the text to be encrypted:");
+            String text = scanner.nextLine();
+            byte[] encryptedText = encrypt(text, key);
+            String hexCiphertext = bytesToHex(encryptedText);
+            String base64Ciphertext = Base64.getEncoder().encodeToString(encryptedText);
+            System.out.println("Ciphertext (Hex): " + hexCiphertext);
+            System.out.println("Ciphertext (Base64): " + base64Ciphertext);
+        } 
+        else if ("decrypt".equals(choice)) 
+        {
+            System.out.println("Enter the text to be decrypted (Base64):");
+            String text = scanner.nextLine();
+            byte[] encryptedText = Base64.getDecoder().decode(text);
+            String decryptedText = decrypt(encryptedText, key);
+            System.out.println("Decrypted Text: " + decryptedText);
+        } 
+        else 
+        {
+            System.out.println("Invalid choice. Please choose either 'encrypt' or 'decrypt'.");
+        }
+    }
+
+    public static byte[] encrypt(String plainText, byte[] key) throws Exception 
+    {
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+        return cipher.doFinal(plainText.getBytes());
+    }
+
+    public static String decrypt(byte[] encryptedText, byte[] key) throws Exception 
+    {
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        cipher.init(Cipher.DECRYPT_MODE, keySpec);
+        byte[] decryptedBytes = cipher.doFinal(encryptedText);
+        return new String(decryptedBytes);
+    }
+
+    public static String bytesToHex(byte[] bytes) 
+    {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) 
+        {
+            sb.append(String.format("%02X", b));
+        }
+        return sb.toString();
+    }
+
+    public static byte[] hexStringToByteArray(String s) 
+    {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) 
+        {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
+    }
+}
+            </textarea>
+        </div>
+    </div>
+    <script>
+        function copyCode() {
+            var codeTextarea = document.getElementById('codeTextarea');
+            var code = codeTextarea.value;
+
+            navigator.clipboard.writeText(code).then(function() {
+                var copyButton = document.getElementById('copyButton');
+                copyButton.innerText = "Code Copied";
+
+                setTimeout(function() {
+                    copyButton.innerText = 'Copy Code';
+                }, 2000);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>            
+</body>
+</html>

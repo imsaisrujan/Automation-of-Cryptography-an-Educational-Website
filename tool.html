@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cipher Tool</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <style>
+        /* Your CSS styles here */
+        html,body{
+            overflow-x: hidden;
+            overflow-y: hidden;
+            scrollbar-width: auto;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #2c2c2c;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #3a3a3a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 1000px;
+            width: 200%;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            border: 1px solid #4a4a4a;
+            border-radius: 5px;
+            background-color: #2c2c2c;
+            color: #ffffff;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4a4a4a;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #5a5a5a;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        #originalAlphabet,
+        #keyValue,
+        #privateKeyValue {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4a4a4a;
+            border-radius: 5px;
+            font-size: smaller;
+        }
+        #resultText + h4 {
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 18px;
+            color: #ffffff;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/aoc13.png" alt="AOC Logo" height="100px"></a>
+    </header>
+    <div class="container">
+        <h1>Cipher Tool</h1>
+        <div class="form-group">
+            <h4>Input:</h4>
+            <textarea id="userText" placeholder="Enter your text here..."></textarea>
+        </div>
+        <div class="form-group">
+            <select id="actionType">
+                <option value="encrypt">Encrypt</option>
+                <option value="decrypt">Decrypt</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <select id="cipherType">
+                <option value="">Select Cipher Type</option>
+                <option value="substitution">Substitution</option>
+                <option value="transposition">Transposition</option>
+                <option value="modern">Modern</option>
+            </select>
+        </div>
+        <div id="cipherOptionsContainer" style="display: none;">
+            <select id="substitutionType" class="cipher-select" style="display:none;">
+                <option value="">Select Cipher Tecnique</option>
+                <option value="mono">MonoAlphabetic Cipher</option>
+                <option value="poly">PolyAlphabetic Cipher</option>
+                <option value="caesar">Caesar Cipher</option>
+                <option value="playfair">Playfair Cipher</option>
+                <option value="hill">Hill Cipher</option>
+            </select>
+            <select id="transpositionType" class="cipher-select" style="display:none;">
+                <option value="">Select Cipher Tecnique</option>
+                <option value="rail">RailFence Cipher</option>
+                <option value="route">Route Cipher</option>
+                <option value="single">Single Columnar Transposition</option>
+                <option value="double">Double Columnar Transposition</option>
+                <option value="onetime">One-Time Pad Cipher</option>
+            </select>
+            <select id="modernType" class="cipher-select" style="display:none;">
+                <option value="">Select Cipher Tecnique</option>
+                <option value="aes">AES</option>
+                <option value="des">DES</option>
+                <option value="rsa">RSA</option>
+                <option value="ecc">ECC</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button id="executeBtn">Execute</button>
+        </div>
+        <div>
+            <p id="originalAlphabet"></p>
+            <p id="keyValue"></p>
+            <p id="privateKeyValue"></p>
+            <h4>Output:</h4>
+            <textarea id="resultText" placeholder="Result will be shown here..." rows="4" cols="50" readonly></textarea>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+    <!-- Include JSEncrypt Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.2.1/jsencrypt.min.js"></script>
+    <!-- Custom Script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/elliptic/6.5.4/elliptic.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

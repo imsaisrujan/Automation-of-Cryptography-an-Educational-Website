@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Encryption Standard(DES)</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html,body{
+            overflow-x: hidden;
+            overflow-y: auto;
+            scrollbar-width: auto;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        .toolbar {
+            color: black;
+            padding: 5px;
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            z-index: 2;
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: transparent;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background: transparent;
+        }
+        .left-section {
+            width: 60%;
+            height: 590vh;
+            background-color: #A9A9A9;
+            float: left;
+        }
+        .right-section {
+            width: 40%;
+            height: 590vh;
+            background-color: #000000;
+            float: right;
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .text-container {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: 20px;
+            max-width: 80%;
+            margin: 125px auto 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .text-container img {
+            max-width: 100%;
+            height: 250px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .text-container.condensed {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .text-container.slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        .black-container {
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            transition: max-width 0.5s;
+            text-align: left;
+            position: relative;
+            margin-top: 100px;
+        }
+
+        .black-container button {
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .black-container button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+		.new-container {
+            flex: 1;
+			color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            transition: max-width 0.5s;
+            margin: 10px;
+			overflow-y: hidden; 
+			overflow-x: hidden;
+			scrollbar-width: thin; 
+			scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        .textArea{
+            width: 100%; 
+            height: 1500px; 
+            resize: none; 
+            border: none; 
+            overflow: auto; 
+            padding: 10px; 
+            font-family: monospace; 
+            display: block; 
+            white-space: nowrap; 
+            color: white; 
+            background-color: #000000;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            color: white;
+        }
+        td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/logo.png" alt="AOC Logo" height="80px"></a>
+    </header>
+    <div class="toolbar">
+        <div class="dropdown">
+            <button id="techniques" class="dropbtn"><b>Cipher Techniques</b></button>
+            <div class="dropdown-content">
+                <a href="./substitution.html">Substitution Techniques</a>
+                <a href="./transposition.html">Transposition Techniques</a>
+                <a href="./modern.html">Modern Techniques</a>
+            </div>
+        </div>
+        <button id="tool">
+            <a href="./tool.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit;">
+                <b>Cipher Tool</b>
+            </a>
+        </button>
+    </div>
+    <div class="left-section">
+        <div class="text-container slab">
+            <h1>Data Encryption Standard(DES)</h1>
+            <p>DES stands for Data Encryption Standard. There are certain machines that can be used to crack the DES algorithm. The DES algorithm uses a key of 56-bit size. Using this key, the DES takes a block of 64-bit plain text as input and generates a block of 64-bit cipher text.</p>
+            <p>The DES process has several steps involved in it, where each step is called a round. Depending upon the size of the key being used, the number of rounds varies. For example, a 128-bit key requires 10 rounds, a 192-bit key requires 12 rounds, and so on.</p>
+            <p> DES is a block cipher and encrypts data in blocks of size of 64 bits each, which means 64 bits of plain text go as the input to DES, which produces 64 bits of ciphertext. The same algorithm and key are used for encryption and decryption, with minor differences. The key length is 56 bits. </p>
+            <img src="./Images/des.jpg">
+            <p style="text-align:center"></p>
+            <h3>Broad Level Steps in DES are:</h3>
+            <ul>
+                <li>In the first step, the 64-bit plain text block is handed over to an initial Permutation (IP) function.</li>
+                <li>The initial permutation is performed on plain text.</li>
+                <li>Next, the initial permutation (IP) produces two halves of the permuted block; saying Left Plain Text (LPT) and Right Plain Text (RPT).</li>
+                <li>Now each LPT and RPT go through 16 rounds of the encryption process.</li>
+                <li>In the end, LPT and RPT are rejoined and a Final Permutation (FP) is performed on the combined block.</li>
+                <li>The result of this process produces 64-bit ciphertext.</li>
+            </ul>
+            <img src="./Images/des2.png">
+            <h3>Initial Permutation (IP)</h3>
+            <p>As we have noted, the initial permutation (IP) happens only once and it happens before the first round. It suggests how the transposition in IP should proceed, as shown in the figure. For example, it says that the IP replaces the first bit of the original plain text block with the 58th bit of the original plain text, the second bit with the 50th bit of the original plain text block, and so on.</p>
+            <p>This is nothing but  jugglery of bit positions of the original plain text block. the same rule applies to all the other bit positions shown in the figure.</p>
+            <img src="./Images/des3.png">
+            <p>As we have noted after IP is done, the resulting 64-bit permuted text block is divided into two half blocks. Each half-block consists of 32 bits, and each of the 16 rounds, in turn, consists of the broad-level steps outlined in the figure. </p>
+            <img src="./Images/des4.png">
+            <h4>Step 1: Key transformation</h4>
+            <p>We have noted initial 64-bit key is transformed into a 56-bit key by discarding every 8th bit of the initial key. Thus, for each a 56-bit key is available. From this 56-bit key, a different 48-bit Sub Key is generated during each round using a process called key transformation. For this, the 56-bit key is divided into two halves, each of 28 bits. These halves are circularly shifted left by one or two positions, depending on the round.</p>
+            <p><b>For example: </b>if the round numbers 1, 2, 9, or 16 the shift is done by only one position for other rounds, the circular shift is done by two positions. The number of key bits shifted per round is shown in the figure.</p>
+            <img src="./Images/des5.png">
+            <p>After an appropriate shift, 48 of the 56 bits are selected. From the 48 we might obtain 64 or 56 bits based on requirement which helps us to recognize that this model is very versatile and can handle any range of requirements needed or provided. for selecting 48 of the 56 bits the table is shown in the figure given below. For instance, after the shift, bit number 14 moves to the first position, bit number 17 moves to the second position, and so on. If we observe the table , we will realize that it contains only 48-bit positions. Bit number 18 is discarded (we will not find it in the table), like 7 others, to reduce a 56-bit key to a 48-bit key. Since the key transformation process involves permutation as well as a selection of a 48-bit subset of the original 56-bit key it is called Compression Permutation.</p>
+            <img src="./Images/des6.png">
+            <p>Because of this compression permutation technique, a different subset of key bits is used in each round. That makes DES not easy to crack.</p>
+            <h4>Step 2: Expansion Permutation</h4>
+            <p>Recall that after the initial permutation, we had two 32-bit plain text areas called Left Plain Text(LPT) and Right Plain Text(RPT). During the expansion permutation, the RPT is expanded from 32 bits to 48 bits. Bits are permuted as well hence called expansion permutation. This happens as the 32-bit RPT is divided into 8 blocks, with each block consisting of 4 bits. Then, each 4-bit block of the previous step is then expanded to a corresponding 6-bit block, i.e., per 4-bit block, 2 more bits are added. </p>
+            <img src="./Images/des7.png">
+            <p>This process results in expansion as well as a permutation of the input bit while creating output. The key transformation process compresses the 56-bit key to 48 bits. Then the expansion permutation process expands the 32-bit RPT to 48-bits. Now the 48-bit key is XOR with 48-bit RPT and the resulting output is given to the next step, which is the<b> S-Box substitution </b>.</p>
+            <h4>Example Input (Plain-text)- IAMABOY</h4>
+            <h4>KEY - 23CEDF1F86976E26</h4>
+            <h4>Example Output (Cipher-text)–  vH+LLlZUtN4=(Base64)</h4>
+        </div>
+    </div>
+    <div id="right-section" class="right-section">
+        <div class="black-container">
+            <h2 style="margin-right: auto; margin-bottom: 0; margin-top: 0;">Java Implementation</h2>
+            <button id="copyButton" onclick="copyCode()" style="margin-left: auto; margin-top: 0; margin-bottom: 0;">Copy Code</button>
+            <textarea id="codeTextarea" class="textArea">
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+import java.util.Scanner;
+
+public class DesEncryption 
+{
+
+    public static void main(String[] args) throws Exception 
+    {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter your choice (encrypt or decrypt):");
+        String choice = scanner.nextLine().toLowerCase();
+
+        System.out.println("Enter the key (leave blank to generate a new key):");
+        String keyInput = scanner.nextLine();
+
+        byte[] key;
+        if (keyInput.isEmpty()) 
+        {
+            KeyGenerator keyGen = KeyGenerator.getInstance("DES");
+            keyGen.init(56); 
+            SecretKey secretKey = keyGen.generateKey();
+            key = secretKey.getEncoded();
+            System.out.println("Generated Key (Hex): " + bytesToHex(key));
+        } 
+        else 
+        {
+            key = hexStringToByteArray(keyInput);
+            System.out.println("Using provided Key (Hex): " + bytesToHex(key));
+        }
+
+        if ("encrypt".equals(choice)) 
+        {
+            System.out.println("Enter the text to be encrypted:");
+            String text = scanner.nextLine();
+            byte[] encryptedText = encrypt(text, key);
+            String hexCiphertext = bytesToHex(encryptedText);
+            String base64Ciphertext = Base64.getEncoder().encodeToString(encryptedText);
+            System.out.println("Ciphertext (Hex): " + hexCiphertext);
+            System.out.println("Ciphertext (Base64): " + base64Ciphertext);
+        } 
+        else if ("decrypt".equals(choice)) 
+        {
+            System.out.println("Enter the text to be decrypted (Base64):");
+            String text = scanner.nextLine();
+            byte[] encryptedText = Base64.getDecoder().decode(text);
+            String decryptedText = decrypt(encryptedText, key);
+            System.out.println("Decrypted Text: " + decryptedText);
+        } 
+        else {
+            System.out.println("Invalid choice. Please choose either 'encrypt' or 'decrypt'.");
+        }
+    }
+
+    public static byte[] encrypt(String plainText, byte[] key) throws Exception 
+    {
+        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+        SecretKeySpec keySpec = new SecretKeySpec(key, "DES");
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+        return cipher.doFinal(plainText.getBytes());
+    }
+
+    public static String decrypt(byte[] encryptedText, byte[] key) throws Exception 
+    {
+        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+        SecretKeySpec keySpec = new SecretKeySpec(key, "DES");
+        cipher.init(Cipher.DECRYPT_MODE, keySpec);
+        byte[] decryptedBytes = cipher.doFinal(encryptedText);
+        return new String(decryptedBytes);
+    }
+
+    public static String bytesToHex(byte[] bytes) 
+    {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) 
+        {
+            sb.append(String.format("%02X", b));
+        }
+        return sb.toString();
+    }
+
+    public static byte[] hexStringToByteArray(String s) 
+    {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) 
+        {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
+    }
+}
+
+            </textarea>
+        </div>
+    </div>
+    <script>
+        function copyCode() {
+            var codeTextarea = document.getElementById('codeTextarea');
+            var code = codeTextarea.value;
+
+            navigator.clipboard.writeText(code).then(function() {
+                var copyButton = document.getElementById('copyButton');
+                copyButton.innerText = "Code Copied";
+
+                setTimeout(function() {
+                    copyButton.innerText = 'Copy Code';
+                }, 2000);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>            
+</body>
+</html>

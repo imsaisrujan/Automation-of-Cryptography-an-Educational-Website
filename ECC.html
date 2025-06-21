@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elliptic Curve Cryptography (ECC)</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html,body{
+            overflow-x: hidden;
+            overflow-y: auto;
+            scrollbar-width: auto;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        .toolbar {
+            color: black;
+            padding: 5px;
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            z-index: 2;
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: transparent;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background: transparent;
+        }
+        .left-section {
+            width: 50%;
+            height: 330vh;
+            background-color: #A9A9A9;
+            float: left;
+        }
+        .right-section {
+            width: 50%;
+            height: 330vh;
+            background-color: #000000;
+            float: right;
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .text-container {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: 20px;
+            max-width: 80%;
+            margin: 125px auto 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .text-container img {
+            max-width: 100%;
+            height: 350px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .text-container.condensed {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .text-container.slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        .black-container {
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            transition: max-width 0.5s;
+            text-align: left;
+            position: relative;
+            margin-top: 100px;
+        }
+
+        .black-container button {
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .black-container button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+		.new-container {
+            flex: 1;
+			color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            transition: max-width 0.5s;
+            margin: 10px;
+			overflow-y: hidden; 
+			overflow-x: hidden;
+			scrollbar-width: thin; 
+			scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        .textArea{
+            width: 100%; 
+            height: 1200px; 
+            resize: none; 
+            border: none; 
+            overflow: auto; 
+            padding: 10px; 
+            font-family: monospace; 
+            display: block; 
+            white-space: nowrap; 
+            color: white; 
+            background-color: #000000;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            color: white;
+        }
+        td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/logo.png" alt="AOC Logo" height="80px"></a>
+    </header>
+    <div class="toolbar">
+        <div class="dropdown">
+            <button id="techniques" class="dropbtn"><b>Cipher Techniques</b></button>
+            <div class="dropdown-content">
+                <a href="./substitution.html">Substitution Techniques</a>
+                <a href="./transposition.html">Transposition Techniques</a>
+                <a href="./modern.html">Modern Techniques</a>
+            </div>
+        </div>
+        <button id="tool">
+            <a href="./tool.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit;">
+                <b>Cipher Tool</b>
+            </a>
+        </button>
+    </div>
+    <div class="left-section">
+        <div class="text-container slab">
+            <h1>Elliptic Curve Cryptography (ECC)</h1>
+            <p>Elliptic Curve Cryptography (ECC) is an asymmetric encryption algorithm, meaning it uses a pair of keys—a public key for encryption and a private key for decryption. ECC is based on the algebraic structure of elliptic curves over finite fields and provides equivalent security to RSA but with much shorter key lengths, making it more efficient.</p>
+            <p>ECC relies on the difficulty of the Elliptic Curve Discrete Logarithm Problem (ECDLP), which is the basis for its security. The ECDLP states that given a point <b>𝑃</b> on an elliptic curve and a point <b>𝑄=𝑘𝑃</b> (where  <b>𝑘</b> is a scalar and <b>𝑃</b> is a known point), it is computationally infeasible to determine <b>𝑘</b>.</p>
+            <p>An elliptic curve is not an ellipse, or oval shape, but it is represented as a looping line intersecting two axes, which are lines on a graph used to indicate the position of a point. The curve is completely symmetric, or mirrored, along the x-axis of the graph.</p>
+            <p>ECC is based on the properties of a set of values for which operations can be performed on any two members of the group to produce a third member, which is derived from points where the line intersects the axes as shown with the green line and three blue dots in the below diagram labeled A, B and C. Multiplying a point on the curve by a number produces another point on the curve (C). Taking point C and bringing it to the mirrored point on the opposite side of the x-axis produces point D. From here, a line is drawn back to our original point A, creating an intersection at point E. This process can be completed n number of times within a defined max value. The n is the private key value, which indicates how many times the equation should be run, ending on the final value that is used to encrypt and decrypt data. The maximum defined value of the equation relates to the key size used.</p>
+            <img src="./Images/ecc1.png">
+            <p style="text-align:center">This elliptical curve diagram shows three intersection points.</p>
+            <h4>How Does ECC Work?</h4>
+            <p>ECC involves the following main components:</p>
+            <ol>
+                <li><b>Key Generation:</b> Generating the public and private keys.</li>
+                <li><b>Encryption/Decryption Function:</b> The steps to encrypt and decrypt data.</li>
+            </ol>
+            <h4>Key Generation in ECC:</h4>
+            <ol>
+                <li>Choose an Elliptic Curve: Select an elliptic curve <b>𝐸</b> defined by an equation of the form <b>𝑦<sup>2</sup></b>=<b>𝑥<sup>3</sup></b>+<b>𝑎𝑥</b>+<b>𝑏</b>, along with a finite field <b>𝐹</b>.</li>
+                <li>Select a Base Point <b>𝑃</b>: Choose a base point <b>𝑃</b> on the elliptic curve, which will be used for key generation.</li>
+                <li>Generate Private Key: Choose a random integer <b>𝑑</b> (private key) from the interval <b>[ 1,𝑛−1 ]</b> , where <b>𝑛</b> is the order of the base point <b>𝑃</b>.</li>
+                <li>Generate Public Key: Calculate the public key <b>𝑄</b> as <b>𝑄=𝑑𝑃</b> , where <b>𝑑</b> is the private key and <b>𝑃</b> is the base point.</li>
+            </ol>
+            <h4>Encryption and Decryption in ECC</h4>
+            <h4>Encryption:</h4>
+            <ol>
+                <li>Plaintext: Represent the plaintext message as a point <b>𝑀</b> on the elliptic curve.</li>
+                <li>Generate a Random Integer <b>𝑘</b>: Choose a random integer <b>𝑘</b> from interval <b>[1,𝑛−1]</b>.</li>
+                <li>Calculate Ciphertext:<ul>
+                    <li>Compute <b>𝐶<sub>1</sub>=𝑘𝑃</b></li>
+                    <li>Compute <b>𝐶<sub>2</sub>=𝑀+𝑘𝑄</b></li>
+                    <li>The ciphertext is the pair <b>(𝐶<sub>1</sub>,𝐶<sub>2</sub>)</b></li>
+                </ul></li>
+            </ol>
+            <h4>Decryption:</h4>
+            <ol>
+                <li>Recover Plaintext: Use the private key <b>𝑑</b> to compute <b>𝑀</b> from <b>(𝐶<sub>1</sub>,𝐶<sub>2</sub>)</b>:
+                <ul>
+                    <li>Compute <b>𝑑𝐶<sub>1</sub></b>.​</li>
+                    <li>Recover the plaintext message <b>𝑀</b> by computing <b>𝑀=𝐶<sub>2</sub>−𝑑𝐶<sub>1</sub></b></li>
+                </ul></li>
+            </ol>
+        </div>
+    </div>
+    <div id="right-section" class="right-section">
+        <div class="black-container">
+            <h2 style="margin-right: auto; margin-bottom: 0; margin-top: 0;">Java Implementation</h2>
+            <button id="copyButton" onclick="copyCode()" style="margin-left: auto; margin-top: 0; margin-bottom: 0;">Copy Code</button>
+            <textarea id="codeTextarea" class="textArea">
+import java.security.*;
+import java.security.spec.*;
+import java.util.Base64;
+import java.util.Scanner;
+
+public class ECCEncryption 
+{
+
+    public static void main(String[] args) throws Exception 
+    {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter your choice (sign or verify):");
+        String choice = scanner.nextLine().toLowerCase();
+
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
+        keyGen.initialize(new ECGenParameterSpec("secp256r1"));
+        KeyPair keyPair = keyGen.generateKeyPair();
+        PublicKey publicKey = keyPair.getPublic();
+        PrivateKey privateKey = keyPair.getPrivate();
+
+        System.out.println("Generated Public Key (Base64): " + Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+        System.out.println("Generated Private Key (Base64): " + Base64.getEncoder().encodeToString(privateKey.getEncoded()));
+
+        if ("sign".equals(choice)) 
+        {
+            System.out.println("Enter the text to be signed:");
+            String text = scanner.nextLine();
+            byte[] signature = sign(text, privateKey);
+            String base64Signature = Base64.getEncoder().encodeToString(signature);
+            System.out.println("Signature (Base64): " + base64Signature);
+        } 
+        else if ("verify".equals(choice)) 
+        {
+            System.out.println("Enter the text:");
+            String text = scanner.nextLine();
+            System.out.println("Enter the signature (Base64):");
+            String signatureString = scanner.nextLine();
+            byte[] signature = Base64.getDecoder().decode(signatureString);
+            boolean isValid = verify(text, signature, publicKey);
+            System.out.println("Signature is " + (isValid ? "valid" : "invalid"));
+        } 
+        else 
+        {
+            System.out.println("Invalid choice. Please choose either 'sign' or 'verify'.");
+        }
+    }
+
+    public static byte[] sign(String text, PrivateKey privateKey) throws Exception 
+    {
+        Signature signature = Signature.getInstance("SHA256withECDSA");
+        signature.initSign(privateKey);
+        signature.update(text.getBytes());
+        return signature.sign();
+    }
+
+    public static boolean verify(String text, byte[] signature, PublicKey publicKey) throws Exception 
+    {
+        Signature sig = Signature.getInstance("SHA256withECDSA");
+        sig.initVerify(publicKey);
+        sig.update(text.getBytes());
+        return sig.verify(signature);
+    }
+}
+            </textarea>
+        </div>
+    </div>
+    <script>
+        function copyCode() {
+            var codeTextarea = document.getElementById('codeTextarea');
+            var code = codeTextarea.value;
+
+            navigator.clipboard.writeText(code).then(function() {
+                var copyButton = document.getElementById('copyButton');
+                copyButton.innerText = "Code Copied";
+
+                setTimeout(function() {
+                    copyButton.innerText = 'Copy Code';
+                }, 2000);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>            
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rivest–Shamir–Adleman(RSA)</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html,body{
+            overflow-x: hidden;
+            overflow-y: auto;
+            scrollbar-width: auto;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        .toolbar {
+            color: black;
+            padding: 5px;
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            z-index: 2;
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: transparent;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background: transparent;
+        }
+        .left-section {
+            width: 50%;
+            height: 340vh;
+            background-color: #A9A9A9;
+            float: left;
+        }
+        .right-section {
+            width: 50%;
+            height: 340vh;
+            background-color: #000000;
+            float: right;
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .text-container {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: 20px;
+            max-width: 80%;
+            margin: 125px auto 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .text-container img {
+            max-width: 100%;
+            height: 250px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .text-container.condensed {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .text-container.slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        .black-container {
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            transition: max-width 0.5s;
+            text-align: left;
+            position: relative;
+            margin-top: 100px;
+        }
+
+        .black-container button {
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .black-container button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+		.new-container {
+            flex: 1;
+			color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            transition: max-width 0.5s;
+            margin: 10px;
+			overflow-y: hidden; 
+			overflow-x: hidden;
+			scrollbar-width: thin; 
+			scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        .textArea{
+            width: 100%; 
+            height: 1200px; 
+            resize: none; 
+            border: none; 
+            overflow: auto; 
+            padding: 10px; 
+            font-family: monospace; 
+            display: block; 
+            white-space: nowrap; 
+            color: white; 
+            background-color: #000000;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            color: white;
+        }
+        td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/logo.png" alt="AOC Logo" height="80px"></a>
+    </header>
+    <div class="toolbar">
+        <div class="dropdown">
+            <button id="techniques" class="dropbtn"><b>Cipher Techniques</b></button>
+            <div class="dropdown-content">
+                <a href="./substitution.html">Substitution Techniques</a>
+                <a href="./transposition.html">Transposition Techniques</a>
+                <a href="./modern.html">Modern Techniques</a>
+            </div>
+        </div>
+        <button id="tool">
+            <a href="./tool.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit;">
+                <b>Cipher Tool</b>
+            </a>
+        </button>
+    </div>
+    <div class="left-section">
+        <div class="text-container slab">
+            <h1>Rivest–Shamir–Adleman(RSA)</h1>
+            <p>RSA is an asymmetric encryption algorithm, meaning it uses a pair of keys—a public key for encryption and a private key for decryption. This allows secure communication without the need to share a secret key in advance.</p>
+            <p>RSA is based on the mathematical properties of large prime numbers. The security of RSA relies on the computational difficulty of factoring the product of two large prime numbers, known as the integer factorization problem.</p>
+            <p>RSA typically uses key sizes of 1024, 2048, or 4096 bits. Larger key sizes provide greater security but require more computational power for encryption and decryption processes.</p>
+            <p>RSA can be used for both encryption of data and digital signatures. In the case of digital signatures, a message is signed with a private key and verified with a public key, ensuring authenticity and integrity.RSA can be used for both encryption of data and digital signatures. In the case of digital signatures, a message is signed with a private key and verified with a public key, ensuring authenticity and integrity.</p>
+            <img src="Images/rsa1.jpg">
+            <p>Here ,
+                <ul>
+                    <li>M denotes an original message</li>
+                    <li>E denotes encryption function</li>
+                    <li>k denotes Vikram’s public key</li>
+                    <li>M’ denotes an encrypted message</li>
+                    <li>k’ denotes Vikram’s private key</li>
+                    <li>D denotes the decryption function</li>
+                </ul>
+            </p>
+            <h3>How Does RSA work?</h3>
+            <p>There are two broad components when it comes to RSA cryptography, they are: 
+                <ul>
+                    <li>Key Generation: Generating the keys to be used for encrypting and decrypting the data to be exchanged.</li>
+                    <li>Encryption/Decryption Function: The steps that need to be run when scrambling and recovering the data.</li>
+                </ul>
+            </p>
+            <img src="./Images/rsa2.png">
+            <h4>RSA algorithm uses the following procedure to generate public and private keys:</h4>
+            <ul>
+                <li>Select two large prime numbers, p and <strong>q</strong>.</li>
+                <li>Multiply these numbers to find <strong>n = p x q,</strong> where <strong>n</strong> is called the modulus for encryption and decryption.</li>
+                <li>Choose a number <strong>e</strong> less than <strong>n</strong>, such that n is relatively prime to <strong>(p - 1) x (q -1).</strong> It means that <strong>e</strong> and <strong>(p - 1) x (q - 1)</strong> have no common factor except 1. Choose "e" such that 1&lt;e &lt; &phi; (n), e is prime to &phi; (n),<br>
+                <strong>gcd (e,d(n)) =1</strong></li>
+                <li>If <strong>n = p x q,</strong> then the public key is &lt;e, n&gt;. A plaintext message <strong>m</strong> is encrypted using public key &lt;e, n&gt;. To find ciphertext from the plain text following formula is used to get ciphertext C.<br>
+                <strong>C = m<sup>e</sup> mod n</strong><br>
+                Here<strong>, m</strong> must be less than <strong>n</strong>. A larger message (&gt;n) is treated as a concatenation of messages, each of which is encrypted separately.</li>
+                <li>To determine the private key, we use the following formula to calculate the d such that:<br>
+                <strong>D<sub>e</sub> mod {(p - 1) x (q - 1)} = 1</strong><br>
+                <strong>Or</strong> <br>
+                <strong>D<sub>e</sub> mod &phi; (n) = 1</strong></li>
+                <li>The private key is &lt;d, n&gt;. A ciphertext message <strong>c</strong> is decrypted using private key &lt;d, n&gt;. To calculate plain text <strong>m</strong> from the ciphertext c following formula is used to get plain text m.<br>
+                <strong>m = c<sup>d</sup> mod n</strong></li>
+            </ul>
+        </div>
+    </div>
+    <div id="right-section" class="right-section">
+        <div class="black-container">
+            <h2 style="margin-right: auto; margin-bottom: 0; margin-top: 0;">Java Implementation</h2>
+            <button id="copyButton" onclick="copyCode()" style="margin-left: auto; margin-top: 0; margin-bottom: 0;">Copy Code</button>
+            <textarea id="codeTextarea" class="textArea">
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import javax.crypto.Cipher;
+import java.util.Base64;
+import java.util.Scanner;
+
+public class RSAEncryption 
+{
+    public static void main(String[] args) throws Exception 
+    {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter your choice (encrypt or decrypt):");
+        String choice = scanner.nextLine().toLowerCase();
+
+        KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
+        keyPairGen.initialize(2048);
+        KeyPair keyPair = keyPairGen.generateKeyPair();
+        PublicKey publicKey = keyPair.getPublic();
+        PrivateKey privateKey = keyPair.getPrivate();
+
+        System.out.println("Generated Public Key (Base64): " + Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+        System.out.println("Generated Private Key (Base64): " + Base64.getEncoder().encodeToString(privateKey.getEncoded()));
+
+        if ("encrypt".equals(choice)) 
+        {
+            System.out.println("Enter the text to be encrypted:");
+            String text = scanner.nextLine();
+            byte[] encryptedText = encrypt(text, publicKey);
+            String base64Ciphertext = Base64.getEncoder().encodeToString(encryptedText);
+            System.out.println("Ciphertext (Base64): " + base64Ciphertext);
+        } 
+        else if ("decrypt".equals(choice)) 
+        {
+            System.out.println("Enter the text to be decrypted (Base64):");
+            String text = scanner.nextLine();
+            byte[] encryptedText = Base64.getDecoder().decode(text);
+            String decryptedText = decrypt(encryptedText, privateKey);
+            System.out.println("Decrypted Text: " + decryptedText);
+        } 
+        else 
+        {
+            System.out.println("Invalid choice. Please choose either 'encrypt' or 'decrypt'.");
+        }
+    }
+
+    public static byte[] encrypt(String plainText, PublicKey publicKey) throws Exception 
+    {
+        Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+        return cipher.doFinal(plainText.getBytes());
+    }
+
+    public static String decrypt(byte[] encryptedText, PrivateKey privateKey) throws Exception 
+    {
+        Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+        cipher.init(Cipher.DECRYPT_MODE, privateKey);
+        byte[] decryptedBytes = cipher.doFinal(encryptedText);
+        return new String(decryptedBytes);
+    }
+}
+            </textarea>
+        </div>
+    </div>
+    <script>
+        function copyCode() {
+            var codeTextarea = document.getElementById('codeTextarea');
+            var code = codeTextarea.value;
+
+            navigator.clipboard.writeText(code).then(function() {
+                var copyButton = document.getElementById('copyButton');
+                copyButton.innerText = "Code Copied";
+
+                setTimeout(function() {
+                    copyButton.innerText = 'Copy Code';
+                }, 2000);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>            
+</body>
+</html>

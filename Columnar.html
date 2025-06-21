@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single Columnar Transposition</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html,body{
+            overflow-x: hidden;
+            overflow-y: auto;
+            scrollbar-width: auto;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        .toolbar {
+            color: black;
+            padding: 5px;
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            z-index: 2;
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: transparent;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background: transparent;
+        }
+        .left-section {
+            width: 50%;
+            height: 270vh;
+            background-color: #A9A9A9;
+            float: left;
+        }
+        .right-section {
+            width: 50%;
+            height: 270vh;
+            background-color: #000000;
+            float: right;
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .text-container {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: 20px;
+            max-width: 80%;
+            margin: 125px auto 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .text-container img {
+            max-width: 100%;
+            height: 180px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .text-container.condensed {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .text-container.slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        .black-container {
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            transition: max-width 0.5s;
+            text-align: left;
+            position: relative;
+            margin-top: 100px;
+        }
+
+        .black-container button {
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .black-container button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+		.new-container {
+            flex: 1;
+			color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            transition: max-width 0.5s;
+            margin: 10px;
+			overflow-y: hidden; 
+			overflow-x: hidden;
+			scrollbar-width: thin; 
+			scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        .textArea{
+            width: 100%; 
+            height: 1560px; 
+            resize: none; 
+            border: none; 
+            overflow: auto; 
+            padding: 10px; 
+            font-family: monospace; 
+            display: block; 
+            white-space: nowrap; 
+            color: white; 
+            background-color: #000000;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            color: white;
+        }
+        td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/logo.png" alt="AOC Logo" height="80px"></a>
+    </header>
+    <div class="toolbar">
+        <div class="dropdown">
+            <button id="techniques" class="dropbtn"><b>Cipher Techniques</b></button>
+            <div class="dropdown-content">
+                <a href="./substitution.html">Substitution Techniques</a>
+                <a href="./transposition.html">Transposition Techniques</a>
+                <a href="./modern.html">Modern Techniques</a>
+            </div>
+        </div>
+        <button id="tool">
+            <a href="./tool.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit;">
+                <b>Cipher Tool</b>
+            </a>
+        </button>
+    </div>
+    <div class="left-section">
+        <div class="text-container slab">
+            <h1>Single Columnar Transposition</h1>
+            <p>The Single Columnar Transposition technique is a form of transposition cipher, which encrypts plaintext by rearranging its characters according to a specified system, rather than substituting the characters</p>
+            <p>Column transposition uses a rectangular arrangement (also called a matrix or grid), consisting of several rows (as many as are necessary to enter the plain text). The number of columns is given by the length of the key (also called keyword).</p>
+            <p>The plaintext is written into a grid or matrix with a predetermined number of columns, which is defined by the length of the keyword. Each character of the plaintext fills the grid row by row.</p>
+            <p>The columns of the grid are rearranged based on the alphabetical order of the keyword. For example, if the keyword is "KEYWORD," the column labeled 'E' would be the first column in the ciphertext, followed by columns 'K,' 'O,' 'R,' 'W,' and 'Y' in their respective alphabetical order.</p>
+            <h3>How does Single Columnar Transposition Cipher Work?</h3>
+            <h4>Encryption:</h4>
+            <p></p>
+            <ol>
+                <li>The message is written out in rows of a fixed length, and then read out again column by column, and the columns are chosen in some scrambled order.</li>
+                <li>Width of the rows and the permutation of the columns are usually defined by a keyword.</li>
+                <li>For example, the word LOCK is of length 4 (so the rows are of length 4), and the permutation is defined by the alphabetical order of the letters in the keyword. In this case, the order would be “3 4 1 2”.</li>
+                <li>Any spare spaces are filled with nulls or left blank or placed by a character (Example: _).</li>
+                <li>Finally, the message is read off in columns, in the order specified by the keyword.</li>
+            </ol>
+            <img src="./Images/col1.jpg">
+            <p style="text-align:center"></p>
+            <h4>Decryption:</h4>
+            <ol>
+                <li>To decipher it, the recipient has to work out the column lengths by dividing the message length by the key length.</li>
+                <li>Then, write the message out in columns again, then re-order the columns by reforming the key word.</li>
+            </ol>
+            <h4>Example Input (Plain-text)- TREE IS GREEN</h4>
+            <h4>KEY - HACK</h4>
+            <p>Explanation: </p>
+            <img src="./Images/col2.png">
+            <p>Upon arranging the columns as per numerical order we get the cipher text.</p>
+            <h4>Example Output (Cipher-text)–  RIR-ESE-T-GNE-E-</h4>
+        </div>
+    </div>
+    <div id="right-section" class="right-section">
+        <div class="black-container">
+            <h2 style="margin-right: auto; margin-bottom: 0; margin-top: 0;">Java Implementation</h2>
+            <button id="copyButton" onclick="copyCode()" style="margin-left: auto; margin-top: 0; margin-bottom: 0;">Copy Code</button>
+            <textarea id="codeTextarea" class="textArea">
+import java.util.*;
+
+public class ColumnarTranspositionCipher 
+{
+    static String key;
+    static Map<Character, Integer> keyMap = new HashMap<>();
+
+    static void setPermutationOrder() 
+    {
+        for (int i = 0; i < key.length(); i++) 
+        {
+            keyMap.put(key.charAt(i), i);
+        }
+    }
+
+    static String encryptMessage(String msg) 
+    {
+        int row, col;
+        StringBuilder cipher = new StringBuilder();
+
+        col = key.length();
+        row = (int) Math.ceil((double) msg.length() / col);
+
+        char[][] matrix = new char[row][col];
+
+        for (int i = 0, k = 0; i < row; i++) 
+        {
+            for (int j = 0; j < col; ) 
+            {
+                if (k < msg.length()) 
+                {
+                    char ch = msg.charAt(k);
+                    if (Character.isLetter(ch) || ch == ' ') 
+                    {
+                        matrix[i][j] = ch;
+                        j++;
+                    }
+                    k++;
+                } 
+                else 
+                {
+                    matrix[i][j] = '_';
+                    j++;
+                }
+            }
+        }
+
+        for (Map.Entry<Character, Integer> entry : keyMap.entrySet()) 
+        {
+            int columnIndex = entry.getValue();
+
+            for (int i = 0; i < row; i++) 
+            {
+                cipher.append(matrix[i][columnIndex]);
+            }
+        }
+        return cipher.toString();
+    }
+
+    static String decryptMessage(String cipher) 
+    {
+        int col = key.length();
+        int row = (int) Math.ceil((double) cipher.length() / col);
+        char[][] cipherMat = new char[row][col];
+
+        int k = 0;
+        for (Map.Entry<Character, Integer> entry : keyMap.entrySet()) 
+        {
+            int columnIndex = entry.getValue();
+            for (int i = 0; i < row; i++) 
+            {
+                cipherMat[i][columnIndex] = cipher.charAt(k++);
+            }
+        }
+
+        StringBuilder msg = new StringBuilder();
+        for (int i = 0; i < row; i++) 
+        {
+            for (int j = 0; j < col; j++) 
+            {
+                if (cipherMat[i][j] != '_') 
+                {
+                    msg.append(cipherMat[i][j]);
+                }
+            }
+        }
+
+        return msg.toString();
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Enter your choice (encrypt or decrypt):");
+        Scanner sc = new Scanner(System.in);
+        String choice = (sc.nextLine()).toLowerCase();
+        System.out.println("Enter the key:");
+        key = sc.nextLine();
+        setPermutationOrder();
+        if ("encrypt".equals(choice)) 
+        {
+            System.out.println("Enter the plain text");
+            String msg = sc.nextLine();
+            String cipher = encryptMessage(msg);
+            System.out.println("Encrypted Message: " + cipher);
+        }
+        else if ("decrypt".equals(choice))
+        {
+            System.out.println("Enter the cipher text");
+            String msg = sc.nextLine();
+            System.out.println("Decrypted Message: " + decryptMessage(msg));
+        }
+    }
+}
+
+            </textarea>
+        </div>
+    </div>
+    <script>
+        function copyCode() {
+            var codeTextarea = document.getElementById('codeTextarea');
+            var code = codeTextarea.value;
+
+            navigator.clipboard.writeText(code).then(function() {
+                var copyButton = document.getElementById('copyButton');
+                copyButton.innerText = "Code Copied";
+
+                setTimeout(function() {
+                    copyButton.innerText = 'Copy Code';
+                }, 2000);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>            
+</body>
+</html>

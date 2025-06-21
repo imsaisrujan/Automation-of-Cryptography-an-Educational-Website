@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RailFence Cipher</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html,body{
+            overflow-x: hidden;
+            overflow-y: auto;
+            scrollbar-width: auto;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        .toolbar {
+            color: black;
+            padding: 5px;
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            z-index: 2;
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: transparent;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background: transparent;
+        }
+        .left-section {
+            width: 50%;
+            height: 250vh;
+            background-color: #A9A9A9;
+            float: left;
+        }
+        .right-section {
+            width: 50%;
+            height: 250vh;
+            background-color: #000000;
+            float: right;
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .text-container {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: 20px;
+            max-width: 80%;
+            margin: 125px auto 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .text-container img {
+            max-width: 100%;
+            height: 180px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .text-container.condensed {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .text-container.slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        .black-container {
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            transition: max-width 0.5s;
+            text-align: left;
+            position: relative;
+            margin-top: 100px;
+        }
+
+        .black-container button {
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .black-container button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+		.new-container {
+            flex: 1;
+			color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            transition: max-width 0.5s;
+            margin: 10px;
+			overflow-y: hidden; 
+			overflow-x: hidden;
+			scrollbar-width: thin; 
+			scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        .textArea{
+            width: 100%; 
+            height: 1450px; 
+            resize: none; 
+            border: none; 
+            overflow: auto; 
+            padding: 10px; 
+            font-family: monospace; 
+            display: block; 
+            white-space: nowrap; 
+            color: white; 
+            background-color: #000000;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            color: white;
+        }
+        td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/logo.png" alt="AOC Logo" height="80px"></a>
+    </header>
+    <div class="toolbar">
+        <div class="dropdown">
+            <button id="techniques" class="dropbtn"><b>Cipher Techniques</b></button>
+            <div class="dropdown-content">
+                <a href="./substitution.html">Substitution Techniques</a>
+                <a href="./transposition.html">Transposition Techniques</a>
+                <a href="./modern.html">Modern Techniques</a>
+            </div>
+        </div>
+        <button id="tool">
+            <a href="./tool.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit;">
+                <b>Cipher Tool</b>
+            </a>
+        </button>
+    </div>
+    <div class="left-section">
+        <div class="text-container slab">
+            <h1>RailFence Cipher</h1>
+            <p>In Rail Fence Cipher, given a plain-text message and a numeric key then cipher/decipher the given text using the Rail Fence algorithm.</p>
+            <p>The rail fence cipher is also called a "zigzag cipher" because we make a rectangle box and write plain text into it in a zigzag form. It is a form of transposition cipher that jumbles up the order of the letters of a message using a basic algorithm. It derives its name from how it is encrypted.</p>
+            <p>The rail fence cipher works by writing your plain text or message on alternate lines across the prail and then reading off each line or rows in turn by turn.</p>
+            <h3>How does RailFence Cipher Work?</h3>
+            <h4>Encryption:</h4>
+            <p>In a transposition cipher, the order of the alphabets is re-arranged to obtain the cipher-text.</p>
+            <ul>
+                <li>In the rail fence cipher, the plain-text is written downwards and diagonally on successive rails of an imaginary fence.</li>
+                <li>When we reach the bottom rail, we traverse upwards moving diagonally, after reaching the top rail, the direction is changed again. Thus the alphabets of the message are written in a zig-zag manner.</li>
+                <li>After each alphabet has been written, the individual rows are combined to obtain the cipher-text.</li>
+            </ul>
+            <p></p>
+            <p style="text-align:center"></p>
+            <h4>Decryption:</h4>
+            <p>As we’ve seen earlier, the number of columns in rail fence cipher remains equal to the length of plain-text message. And the key corresponds to the number of rails.</p>
+            <ul>
+                <li>Hence, rail matrix can be constructed accordingly. Once we’ve got the matrix we can figure-out the spots where texts should be placed (using the same way of moving diagonally up and down alternatively ).</li>
+                <li>Then, we fill the cipher-text row wise. After filling it, we traverse the matrix in zig-zag manner to obtain the original text.</li>
+            </ul>
+            <h4>Example Input (Plain-text)– DEFEND THE EAST WALL</h4>
+            <h4>KEY - 3</h4>
+            <p>Explanation: The plaintext we have i.e "defend the east wall" having a key size or the size of the row is 3, we get the encryption method below,</p>
+            <img src="./Images/rail1.jpg">
+            <p>That at the end of the message we have inserted two "X"s. These are called nulls and act as placeholders. We do this to make the text fit into the rail so that there is the same number of letters on the top row as well as on the bottom row. Otherwise, it is not necessary, it makes the decryption process a bit easier if the text has this format.</p>
+            <p>And the cipher text became: "dnetleedheswlxftaax".</p>
+            <h4>Example Output (Cipher-text)–  DNETLEEDHESWLXFTAAX </h4>
+        </div>
+    </div>
+    <div id="right-section" class="right-section">
+        <div class="black-container">
+            <h2 style="margin-right: auto; margin-bottom: 0; margin-top: 0;">Java Implementation</h2>
+            <button id="copyButton" onclick="copyCode()" style="margin-left: auto; margin-top: 0; margin-bottom: 0;">Copy Code</button>
+            <textarea id="codeTextarea" class="textArea">
+import java.util.Scanner;
+public class RailFenceCipher
+{
+    public static void main(String[] args)
+    {
+        Scanner sc=new Scanner(System.in);
+        System.out.println("Enter your choice (encrypt or decrypt):");
+        String choice = (sc.nextLine()).toLowerCase();
+        if ("encrypt".equals(choice)) 
+        {
+            System.out.println("enter the plain text:");
+            String plainText=sc.nextLine();
+            System.out.println("enter the key/number of rows:");
+            int key=sc.nextInt();
+            String en=encryption(plainText,key);
+            System.out.println(en);
+        }
+        else if ("decrypt".equals(choice)) 
+        {
+            System.out.println("enter the cipher text:");
+            String cipherText=sc.nextLine();
+            System.out.println("enter the key/number of rows:");
+            int key=sc.nextInt();
+            System.out.println(decryption(cipherText,key));
+        }
+    }
+    static String encryption(String text,int key)
+    {
+        String encryptedText="";
+        boolean check=false;
+        int j=0;
+        int row=key;
+        int col=text.length();
+        char[][] a=new char[row][col];
+        for(int i=0;i<col;i++)
+        {
+            if(j==0||j==key-1)
+            {
+                check=!check;
+                a[j][i]=text.charAt(i);
+            }
+            if(check)
+            {
+                j++;
+            }
+            else
+            {
+                j--;
+            }
+        }
+        for(int i=0;i<row;i++)
+        {
+            for(int k=0;k<col;k++)
+            {
+                if(a[i][k]!=0)
+                {
+                    encryptedText+=a[i][k];
+                }
+            }
+        }                                                                                    
+        for(int i=0;i<row;i++)
+        {
+            for(int k=0;k<col;k++)
+            {
+                System.out.print(a[i][k]+" ");
+            }
+        System.out.println();
+        }
+        return encryptedText;
+    }
+    static String decryption(String text,int key)
+    {
+        String decryptedText="";
+        boolean check=false;
+        int j=0;
+        int row=key;
+        int col=text.length();
+        char[][] a=new char[row][col];
+        for(int i=0;i<col;i++)
+        {
+            if(j==0||j==key-1)
+            check=!check;
+            a[j][i]='*';
+            if(check)
+            j++;
+            else
+            j--;
+        }
+        int index=0;
+        check=false;
+        for(int i=0;i<row;i++)
+        {
+            for(int k=0;k<col;k++)
+            {
+                if(a[i][k]=='*'&&index<col)
+                {
+                    a[i][k]=text.charAt(index++);
+                }
+            }
+        }
+        j=0;
+        for(int i=0;i<col;i++)
+        {
+            if(j==0||j==key-1)
+            check=!check;
+            decryptedText+=a[j][i];
+            if(check)
+            {
+                j++;
+            }
+            else
+            {
+                j--;
+            }
+        }
+        return decryptedText;
+    }
+}    
+            </textarea>
+        </div>
+    </div>
+    <script>
+        function copyCode() {
+            var codeTextarea = document.getElementById('codeTextarea');
+            var code = codeTextarea.value;
+
+            navigator.clipboard.writeText(code).then(function() {
+                var copyButton = document.getElementById('copyButton');
+                copyButton.innerText = "Code Copied";
+
+                setTimeout(function() {
+                    copyButton.innerText = 'Copy Code';
+                }, 2000);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>            
+</body>
+</html>

@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route/Path Cipher</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html,body{
+            overflow-x: hidden;
+            overflow-y: auto;
+            scrollbar-width: auto;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        .toolbar {
+            color: black;
+            padding: 5px;
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            z-index: 2;
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: transparent;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background: transparent;
+        }
+        .left-section {
+            width: 50%;
+            height: 330vh;
+            background-color: #A9A9A9;
+            float: left;
+        }
+        .right-section {
+            width: 50%;
+            height: 330vh;
+            background-color: #000000;
+            float: right;
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .text-container {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: 20px;
+            max-width: 80%;
+            margin: 125px auto 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .text-container img {
+            max-width: 100%;
+            height: 180px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .text-container.condensed {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .text-container.slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        .black-container {
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            transition: max-width 0.5s;
+            text-align: left;
+            position: relative;
+            margin-top: 100px;
+        }
+
+        .black-container button {
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .black-container button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+		.new-container {
+            flex: 1;
+			color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            transition: max-width 0.5s;
+            margin: 10px;
+			overflow-y: hidden; 
+			overflow-x: hidden;
+			scrollbar-width: thin; 
+			scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        .textArea{
+            width: 100%; 
+            height: 3550px; 
+            resize: none; 
+            border: none; 
+            overflow: auto; 
+            padding: 10px; 
+            font-family: monospace; 
+            display: block; 
+            white-space: nowrap; 
+            color: white; 
+            background-color: #000000;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            color: white;
+        }
+        td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/logo.png" alt="AOC Logo" height="80px"></a>
+    </header>
+    <div class="toolbar">
+        <div class="dropdown">
+            <button id="techniques" class="dropbtn"><b>Cipher Techniques</b></button>
+            <div class="dropdown-content">
+                <a href="./substitution.html">Substitution Techniques</a>
+                <a href="./transposition.html">Transposition Techniques</a>
+                <a href="./modern.html">Modern Techniques</a>
+            </div>
+        </div>
+        <button id="tool">
+            <a href="./tool.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit;">
+                <b>Cipher Tool</b>
+            </a>
+        </button>
+    </div>
+    <div class="left-section">
+        <div class="text-container slab">
+            <h1>Route/Path Cipher</h1>
+            <p>The Route Cipher, also known as the Route Transposition Cipher, is a classical encryption technique that rearranges the characters in the plaintext to produce the ciphertext.</p>
+            <p>The Route Cipher involves writing the plaintext into a grid of a specified number of rows and columns. The characters are filled in a specific order, usually row-wise or column-wise.</p>
+            <p>The key aspect of the Route Cipher is the "route" or path chosen to read the characters from the grid to form the ciphertext. Common routes include reading in a zigzag pattern, spirally inward, or in a specific diagonal order.</p>
+            <p>The selected route determines the permutation of the characters, effectively rearranging the plaintext into the ciphertext. Different routes produce different ciphertexts, even for the same plaintext and grid dimensions.</p>
+            <p>The key for a Route Cipher typically includes the dimensions of the grid (number of rows and columns) and the specific route or reading pattern to be followed. This key must be known by both the sender and receiver to correctly encrypt and decrypt the message.</p>
+            <h3>How does Route Cipher Work?</h3>
+            <h4>Encryption:</h4>
+            <ul>
+                <li>Choose a message to encrypt and a key that specifies the number of rows and columns used to rearrange the letters.</li>
+                <li>Write the message in a grid, filling each cell from left to right and top to bottom.</li>
+                <li>Read the letters in each column from top to bottom, starting with the first column and moving to the last column.</li>
+                <li>Write the resulting letters in a new message, which will be the encrypted message.</li>
+            </ul>
+            <img src="Images/route1.png">
+            <h4>Decryption:</h4>
+            <ul>
+                <li>Choose an encrypted message to decrypt and a key that specifies the number of rows and columns used to rearrange the letters.</li>
+                <li>Write the encrypted message in a grid, filling each cell from left to right and top to bottom.</li>
+                <li>Write the letters in each row from left to right, starting with the first row and moving to the last row.</li>
+                <li>Write the resulting letters in a new message, which will be the decrypted message.</li>
+            </ul>
+            <h4>Example Input (Plain-text)- ABORT THE MISSION YOU HAVE BEEN SPOTTED</h4>
+            <h4>KEY/NUMBER OF COLUMNS - 5</h4>
+            <p>Explanation:  First we need to decide on the number of columns we are going to use, lets say 5.</p>
+            <img src="./Images/route2.jpg">
+            <p style="text-align:center">The plaintext written in a grid with 5 columns.</p>
+            <p>Notice how we have used nulls at the end of the message to make a nice rectangle.We then choose which route we want to use to encrypt the message.</p>
+            <p>With a route of reading down the columns we get the ciphertext: "ATSYV NTBHS OESEO EIUBP DRMOH EOXTI NAETX".</p>
+            <p>With a route of spiralling inwards counter-clockwise from the bottom right we get: "XTEAN ITROB ATSYV NTEDX OEHOM EHSOE SPBUI".</p>
+            <h4>Example Output (Cipher-text)–  <p>ATSYV NTBHS OESEO EIUBP DRMOH EOXTI NAETX (path:down the columns)</p>
+            <p>XTEAN ITROB ATSYV NTEDX OEHOM EHSOE SPBUI </p> (path:spiralling inwards counter-clockwise from the bottom right)</h4>
+        </div>
+    </div>
+    <div id="right-section" class="right-section">
+        <div class="black-container">
+            <h2 style="margin-right: auto; margin-bottom: 0; margin-top: 0;">Java Implementation</h2>
+            <button id="copyButton" onclick="copyCode()" style="margin-left: auto; margin-top: 0; margin-bottom: 0;">Copy Code</button>
+            <textarea id="codeTextarea" class="textArea">
+import java.util.Scanner;
+
+public class RouteCipher 
+{
+    static char[][] fillGrid(String msg, int rows, int cols) 
+    {
+        char[][] grid = new char[rows][cols];
+        int k = 0;
+
+        for (int i = 0; i < rows; i++) 
+        {
+            for (int j = 0; j < cols; j++) 
+            {
+                if (k < msg.length()) 
+                {
+                    grid[i][j] = msg.charAt(k);
+                    k++;
+                } 
+                else 
+                {
+                    grid[i][j] = '_';  
+                }
+            }
+        }
+        return grid;
+    }
+
+    static String encryptSideToSideRow(char[][] grid, int rows, int cols) 
+    {
+        StringBuilder cipher = new StringBuilder();
+        for (int i = 0; i < rows; i++) 
+        {
+            for (int j = 0; j < cols; j++) 
+            {
+                cipher.append(grid[i][j]);
+            }
+        }
+        return cipher.toString();
+    }
+
+    static String encryptUpAndDownColumn(char[][] grid, int rows, int cols) 
+    {
+        StringBuilder cipher = new StringBuilder();
+        for (int j = 0; j < cols; j++) 
+        {
+            for (int i = 0; i < rows; i++) 
+            {
+                cipher.append(grid[i][j]);
+            }
+        }
+        return cipher.toString();
+    }
+
+    static String encryptSpiralRow(char[][] grid, int rows, int cols) 
+    {
+        StringBuilder cipher = new StringBuilder();
+        int top = 0, bottom = rows - 1, left = 0, right = cols - 1;
+
+        while (top <= bottom && left <= right) 
+        {
+            for (int i = left; i <= right; i++) 
+            {
+                cipher.append(grid[top][i]);
+            }
+            top++;
+
+            for (int i = top; i <= bottom; i++) 
+            {
+                cipher.append(grid[i][right]);
+            }
+            right--;
+
+            if (top <= bottom) 
+            {
+                for (int i = right; i >= left; i--) 
+                {
+                    cipher.append(grid[bottom][i]);
+                }
+                bottom--;
+            }
+
+            if (left <= right) 
+            {
+                for (int i = bottom; i >= top; i--) 
+                {
+                    cipher.append(grid[i][left]);
+                }
+                left++;
+            }
+        }
+        return cipher.toString();
+    }
+
+    static String encryptSideToSideColumn(char[][] grid, int rows, int cols) 
+    {
+        StringBuilder cipher = new StringBuilder();
+        for (int j = 0; j < cols; j++) 
+        {
+            for (int i = 0; i < rows; i++) 
+            {
+                cipher.append(grid[i][j]);
+            }
+        }
+        return cipher.toString();
+    }
+
+    static String encryptUpAndDownRow(char[][] grid, int rows, int cols) 
+    {
+        StringBuilder cipher = new StringBuilder();
+        for (int i = 0; i < rows; i++) 
+        {
+            for (int j = 0; j < cols; j++) 
+            {
+                cipher.append(grid[i][j]);
+            }
+        }
+        return cipher.toString();
+    }
+
+    static String encryptSpiralColumn(char[][] grid, int rows, int cols) 
+    {
+        StringBuilder cipher = new StringBuilder();
+        int top = 0, bottom = rows - 1, left = 0, right = cols - 1;
+
+        while (top <= bottom && left <= right) 
+        {
+            for (int i = top; i <= bottom; i++) 
+            {
+                cipher.append(grid[i][left]);
+            }
+            left++;
+
+            for (int i = left; i <= right; i++) 
+            {
+                cipher.append(grid[bottom][i]);
+            }
+            bottom--;
+
+            if (left <= right) 
+            {
+                for (int i = bottom; i >= top; i--) 
+                {
+                    cipher.append(grid[i][right]);
+                }
+                right--;
+            }
+
+            if (top <= bottom) 
+            {
+                for (int i = right; i >= left; i--) 
+                {
+                    cipher.append(grid[top][i]);
+                }
+                top++;
+            }
+        }
+        return cipher.toString();
+    }
+
+    static String decryptSideToSideRow(String cipher, int rows, int cols) 
+    {
+        char[][] grid = new char[rows][cols];
+        int k = 0;
+
+        for (int i = 0; i < rows; i++) 
+        {
+            for (int j = 0; j < cols; j++) 
+            {
+                grid[i][j] = cipher.charAt(k);
+                k++;
+            }
+        }
+
+        StringBuilder msg = new StringBuilder();
+        for (int i = 0; i < rows; i++) 
+        {
+            for (int j = 0; j < cols; j++) 
+            {
+                if (grid[i][j] != '_') 
+                {
+                    msg.append(grid[i][j]);
+                }
+            }
+        }
+        return msg.toString();
+    }
+
+    static String decryptUpAndDownColumn(String cipher, int rows, int cols) 
+    {
+        char[][] grid = new char[rows][cols];
+        int k = 0;
+
+        for (int j = 0; j < cols; j++) 
+        {
+            for (int i = 0; i < rows; i++) 
+            {
+                grid[i][j] = cipher.charAt(k);
+                k++;
+            }
+        }
+
+        StringBuilder msg = new StringBuilder();
+        for (int i = 0; i < rows; i++) 
+        {
+            for (int j = 0; j < cols; j++) 
+            {
+                if (grid[i][j] != '_') 
+                {
+                    msg.append(grid[i][j]);
+                }
+            }
+        }
+        return msg.toString();
+    }
+
+    static String decryptSpiralRow(String cipher, int rows, int cols) 
+    {
+        char[][] grid = new char[rows][cols];
+        int k = 0;
+        int top = 0, bottom = rows - 1, left = 0, right = cols - 1;
+
+        while (top <= bottom && left <= right) 
+        {
+            for (int i = left; i <= right; i++) 
+            {
+                grid[top][i] = cipher.charAt(k++);
+            }
+            top++;
+
+            for (int i = top; i <= bottom; i++) 
+            {
+                grid[i][right] = cipher.charAt(k++);
+            }
+            right--;
+
+            if (top <= bottom) 
+            {
+                for (int i = right; i >= left; i--) 
+                {
+                    grid[bottom][i] = cipher.charAt(k++);
+                }
+                bottom--;
+            }
+
+            if (left <= right) 
+            {
+                for (int i = bottom; i >= top; i--) 
+                {
+                    grid[i][left] = cipher.charAt(k++);
+                }
+                left++;
+            }
+        }
+
+        StringBuilder msg = new StringBuilder();
+        for (int i = 0; i < rows; i++) 
+        {
+            for (int j = 0; j < cols; j++) 
+            {
+                if (grid[i][j] != '_') 
+                {
+                    msg.append(grid[i][j]);
+                }
+            }
+        }
+        return msg.toString();
+    }
+     
+    static String decryptSideToSideColumn(String cipher, int rows, int cols) 
+    {
+        char[][] grid = new char[rows][cols];
+        int k = 0;
+     
+        for (int j = 0; j < cols; j++) 
+        {
+            for (int i = 0; i < rows; i++) 
+            {
+                grid[i][j] = cipher.charAt(k);
+                k++;
+            }
+        }
+     
+        StringBuilder msg = new StringBuilder();
+        for (int j = 0; j < cols; j++) 
+        {
+            for (int i = 0; i < rows; i++) 
+            {
+                if (grid[i][j] != '_') 
+                {
+                    msg.append(grid[i][j]);
+                }
+            }
+        }
+        return msg.toString();
+    }
+     
+    static String decryptUpAndDownRow(String cipher, int rows, int cols) 
+    {
+        char[][] grid = new char[rows][cols];
+        int k = 0;
+     
+        for (int i = 0; i < rows; i++) 
+        {
+            for (int j = 0; j < cols; j++) 
+            {
+                grid[i][j] = cipher.charAt(k);
+                k++;
+            }
+        }
+     
+        StringBuilder msg = new StringBuilder();
+        for (int j = 0; j < cols; j++) 
+        {
+            for (int i = 0; i < rows; i++) 
+            {
+                if (grid[i][j] != '_') 
+                {
+                    msg.append(grid[i][j]);
+                }
+            }
+        }
+        return msg.toString();
+    }
+     
+    static String decryptSpiralColumn(String cipher, int rows, int cols) 
+    {
+        char[][] grid = new char[rows][cols];
+        int k = 0;
+        int top = 0, bottom = rows - 1, left = 0, right = cols - 1;
+ 
+        while (top <= bottom && left <= right) 
+        {
+            for (int i = top; i <= bottom; i++) 
+            {
+                grid[i][left] = cipher.charAt(k++);
+            }
+            left++;
+     
+            for (int i = left; i <= right; i++) 
+            {
+                grid[bottom][i] = cipher.charAt(k++);
+            }
+            bottom--;
+     
+            if (left <= right) 
+            {
+                for (int i = bottom; i >= top; i--) 
+                {
+                    grid[i][right] = cipher.charAt(k++);
+                }
+                right--;
+            }
+     
+            if (top <= bottom) 
+            {
+                for (int i = right; i >= left; i--) 
+                {
+                    grid[top][i] = cipher.charAt(k++);
+                }
+                top++;
+            }
+        }
+     
+        StringBuilder msg = new StringBuilder();
+        for (int i = 0; i < rows; i++) 
+        {
+            for (int j = 0; j < cols; j++) 
+            {
+                if (grid[i][j] != '_') 
+                {
+                    msg.append(grid[i][j]);
+                }
+            }
+        }
+        return msg.toString();
+    }
+     
+    public static void main(String[] args) 
+    {
+        System.out.println("Enter your choice (encrypt or decrypt):");
+        Scanner sc = new Scanner(System.in);
+        String keychoice = (sc.nextLine()).toLowerCase();
+
+        System.out.println("Enter the number of rows for the grid:");
+        int rows = sc.nextInt();
+ 
+        System.out.println("Enter the number of columns for the grid:");
+        int cols = sc.nextInt();
+ 
+        sc.nextLine(); 
+        System.out.println("Choose the path:");
+        System.out.println("1. Side-to-Side Row-wise");
+        System.out.println("2. Up-and-Down Column-wise");
+        System.out.println("3. Spiral (row-wise inward)");
+        System.out.println("4. Side-to-Side (column-wise)");
+        System.out.println("5. Up-and-Down (row-wise)");
+        System.out.println("6. Spiral (column-wise inward)");
+        int choice = sc.nextInt();
+
+        if ("encrypt".equals(keychoice)) 
+        {
+            System.out.println("Enter the message to encrypt:");
+            String message = sc.nextLine();
+             
+            char[][] grid = fillGrid(message, rows, cols);
+            String encryptedMessage = "";
+     
+            switch (choice) 
+            {
+                case 1:
+                    encryptedMessage = encryptSideToSideRow(grid, rows, cols);
+                    break;
+                case 2:
+                    encryptedMessage = encryptUpAndDownColumn(grid, rows, cols);
+                    break;
+                case 3:
+                    encryptedMessage = encryptSpiralRow(grid, rows, cols);
+                    break;
+                case 4:
+                    encryptedMessage = encryptSideToSideColumn(grid, rows, cols);
+                    break;
+                case 5:
+                    encryptedMessage = encryptUpAndDownRow(grid, rows, cols);
+                    break;
+                case 6:
+                    encryptedMessage = encryptSpiralColumn(grid, rows, cols);
+                    break;
+                default:
+                    System.out.println("Invalid choice");
+                    return;
+            }
+     
+            System.out.println("Encrypted Message: " + encryptedMessage);
+        }
+        else if ("decrypt".equals(keychoice)) 
+        {
+            System.out.println("Enter the message to decrypt:");
+            sc.nextLine();
+            String message = sc.nextLine();
+            
+            if (message.isEmpty()) {
+                System.out.println("Error: Cannot decrypt an empty message.");
+                return;
+            }
+             
+            char[][] grid = fillGrid(message, rows, cols);
+            String decryptedMessage = "";
+     
+            switch (choice) 
+            {
+                case 1:
+                    decryptedMessage = decryptSideToSideRow(message, rows, cols);
+                    break;
+                case 2:
+                    decryptedMessage = decryptUpAndDownColumn(message, rows, cols);
+                    break;
+                case 3:
+                    decryptedMessage = decryptSpiralRow(message, rows, cols);
+                    break;
+                case 4:
+                    decryptedMessage = decryptSideToSideColumn(message, rows, cols);
+                    break;
+                case 5:
+                    decryptedMessage = decryptUpAndDownRow(message, rows, cols);
+                    break;
+                case 6:
+                    decryptedMessage = decryptSpiralColumn(message, rows, cols);
+                    break;
+                default:
+                    System.out.println("Invalid choice");
+                    return;
+            }
+            System.out.println("Decrypted Message: " + decryptedMessage);
+        }
+    }
+}
+
+            </textarea>
+        </div>
+    </div>
+    <script>
+        function copyCode() {
+            var codeTextarea = document.getElementById('codeTextarea');
+            var code = codeTextarea.value;
+
+            navigator.clipboard.writeText(code).then(function() {
+                var copyButton = document.getElementById('copyButton');
+                copyButton.innerText = "Code Copied";
+
+                setTimeout(function() {
+                    copyButton.innerText = 'Copy Code';
+                }, 2000);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>            
+</body>
+</html>

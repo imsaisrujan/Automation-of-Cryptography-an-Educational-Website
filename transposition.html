@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transposition Techniques</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        .toolbar {
+            color: black;
+            padding: 5px;
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            z-index: 2;
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: transparent;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background: transparent;
+        }
+        .left-section {
+            width: 50%;
+            height: 100vh;
+            background-color: #A9A9A9;
+            float: left;
+            transition: width 0.5s;
+        }
+        .right-section {
+            width: 50%;
+            height: 100vh;
+            background-color: #000000;
+            float: right;
+            cursor: move;
+            transition: width 0.5s, right 0.5s;
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .symbol {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.5s, right 0.5s;
+            right: 46.5%;
+        }
+        .symbol img {
+            width: 24px;
+            height: 24px;
+        }
+        .text-container {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: 20px;
+            max-width: 80%;
+            margin: 125px auto 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .text-container img {
+            max-width: 100%;
+            height: 200px;
+        }
+        .text-container.condensed {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .text-container.slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        .black-container {
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+            transition: max-width 0.5s;
+        }
+
+        .black-container button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .black-container button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+		.new-container {
+            flex: 1;
+			color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            transition: max-width 0.5s;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/logo.png" alt="AOC Logo" height="80px"></a>
+    </header>
+    <div class="toolbar">
+        <div class="dropdown">
+            <button id="techniques" class="dropbtn"><b>Cipher Techniques</b></button>
+            <div class="dropdown-content">
+                <a href="./substitution.html">Substitution Techniques</a>
+                <a href="./modern.html">Modern Techniques</a>
+            </div>
+        </div>
+        <button id="tool">
+            <a href="./tool.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit;">
+                <b>Cipher Tool</b>
+            </a>
+        </button>
+    </div>
+    <div class="left-section">
+        <div class="text-container slab">
+            <h1>Transposition Techniques</h1>
+			<p>Transposition techniques are cryptographic methods that involve the rearrangement of characters or elements within a message to conceal its original meaning. Unlike substitution techniques, where characters are replaced with other characters, transposition techniques focus on changing the order of the characters. These methods are often used as part of more complex encryption schemes to enhance security.</p>
+        </div>
+    </div>
+    <div id="right-section" class="right-section" draggable="true">
+        <div class="black-container">
+            <h2>Types of Transposition Techniques</h2>
+            <button id="rail">RailFence Cipher</button>
+            <button id="columnar">Single Columnar Transposition</button>
+			<button id="double">Double Columnar Transposition</button>
+            <button id="route">Route/Path Cipher</button>
+			<button id="otp">One-Time Pad</button>
+        </div>
+        <div class="new-container" id="rail-content">
+            <h1>RailFence Cipher</h1>
+			<p>The rail fence cipher involves writing the plaintext in a zigzag pattern across a number of rows.The key is the number of rows used. The ciphertext is then read off in rows.Decryption involves reconstructing the zigzag pattern and reading off the message.</p>
+            <a href="./RailFenceCipher.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit; float:right">Read More</a>
+		</div>
+        <div class="new-container" id="columnar-content">
+            <h1>Single Columnar Transposition</h1>
+            <p>In columnar transposition, the plaintext is written out in rows of a fixed length, and then the columns are rearranged according to a key.The key determines the order in which the columns are read to obtain the cipher text.Decryption involves rearranging the columns back to their original order.</p>
+            <a href="./Columnar.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit; float:right">Read More</a>
+        </div>
+		<div class="new-container" id="route-content">
+            <h1>Route/Path Cipher</h1>
+            <p>The route cipher involves writing the plaintext in a grid and then reading it out in a specific pattern.The key specifies the route for reading the text. The grid can be arranged in different shapes, such as a spiral or a specific path.Decryption requires knowing the key to follow the reverse route.</p>
+            <a href="./RouteCipher.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit; float:right">Read More</a>
+        </div>
+		<div class="new-container" id="double-content">
+            <h1>Double Columnar Transposition</h1>
+            <p>This is simply a columnar transposition applied twice. The same key can be used for both transpositions, or two different keys can be used.Thus to make columar transposition technique stronger, a double transposition was often used.</p>
+            <a href="./Double.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit; float:right">Read More</a>
+        </div>
+        <div class="new-container" id="otp-content">
+            <h1>One-Time Pad</h1>
+            <p>The One-Time Pad is a type of cryptography technique where a plaintext is combined with a random key (pad) of the same length. The key is used only once, hence the name "one-time pad." This method is theoretically unbreakable if used correctly.</p>
+            <a href="./OneTimePad.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit; float:right">Read More</a>
+        </div>
+    </div>
+    <div class="symbol" onclick="toggleWidth()">
+        <img src="./Images/mouse.png" alt="Mouse Icon">
+    </div>
+
+    <script>
+        let rightSection = document.getElementById('right-section');
+        let symbol = document.querySelector('.symbol');
+        let isExpanded = false;
+
+        function toggleWidth() {
+            if (isExpanded) {
+                document.querySelector('.left-section').style.width = '50%';
+                rightSection.style.width = '50%';
+                rightSection.style.right = '0';
+                symbol.style.right = '46.5%';
+                document.querySelector('.black-container').style.maxWidth = '70%';
+                document.querySelectorAll('.new-container').forEach(container => {
+                    container.style.display = 'none';
+                });
+            } else {
+                document.querySelector('.left-section').style.width = '25%';
+                rightSection.style.width = '75%';
+                rightSection.style.right = '0';
+                symbol.style.right = '71.5%';
+                document.querySelector('.black-container').style.maxWidth = '50%';
+            }
+            isExpanded = !isExpanded;
+        }
+
+        let buttons = document.querySelectorAll('.black-container button');
+        let containers = document.querySelectorAll('.new-container');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                containers.forEach(container => {
+                    container.style.display = 'none';
+                });
+                let id = button.getAttribute('id');
+                document.getElementById(id + '-content').style.display = 'block';
+                document.querySelector('.black-container').style.maxWidth = '50%';
+                document.querySelector('.left-section').style.width = '25%';
+                rightSection.style.width = '75%';
+                rightSection.style.right = '0';
+                symbol.style.right = '71.5%';
+            });
+        });
+
+    </script>
+</body>
+</html>

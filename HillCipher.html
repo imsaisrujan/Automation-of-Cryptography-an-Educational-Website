@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hill Cipher</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html,body{
+            overflow-x: hidden; 
+            overflow-y: auto;
+            scrollbar-width: auto;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        .toolbar {
+            color: black;
+            padding: 5px;
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            z-index: 2;
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: transparent;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background: transparent;
+        }
+        .left-section {
+            width: 50%;
+            height: 540vh;
+            background-color: #A9A9A9;
+            float: left;
+        }
+        .right-section {
+            width: 50%;
+            height: 540vh;
+            background-color: #000000;
+            float: right;
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .text-container {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: 20px;
+            max-width: 80%;
+            margin: 125px auto 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .text-container img {
+            max-width: 100%;
+            height: 200px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .text-container.condensed {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .text-container.slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        .black-container {
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            transition: max-width 0.5s;
+            text-align: left;
+            position: relative;
+            margin-top: 100px;
+        }
+
+        .black-container button {
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .black-container button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+		.new-container {
+            flex: 1;
+			color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            transition: max-width 0.5s;
+            margin: 10px;
+			overflow-y: hidden; 
+			overflow-x: hidden;
+			scrollbar-width: thin; 
+			scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        .textArea{
+            width: 100%; 
+            height: 3450px; 
+            resize: none; 
+            border: none; 
+            overflow: auto; 
+            padding: 10px; 
+            font-family: monospace; 
+            display: block; 
+            white-space: nowrap; 
+            color: white; 
+            background-color: #000000;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            color: white;
+        }
+        td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/logo.png" alt="AOC Logo" height="80px"></a>
+    </header>
+    <div class="toolbar">
+        <div class="dropdown">
+            <button id="techniques" class="dropbtn"><b>Cipher Techniques</b></button>
+            <div class="dropdown-content">
+                <a href="./substitution.html">Substitution Techniques</a>
+                <a href="./transposition.html">Transposition Techniques</a>
+                <a href="./modern.html">Modern Techniques</a>
+            </div>
+        </div>
+        <button id="tool">
+            <a href="./tool.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit;">
+                <b>Cipher Tool</b>
+            </a>
+        </button>
+    </div>
+    <div class="left-section">
+        <div class="text-container slab">
+            <h1>Hill Cipher</h1>
+            <p>In classical cryptography, the hill cipher is a polygraphic substitution cipher based on Linear Algebra. It was invented by Lester S. Hill in the year 1929. In simple words, it is a cryptography algorithm used to encrypt and decrypt data for the purpose of data security.</p>
+            <p>The algorithm uses matrix calculations used in Linear Algebra. It is easier to understand if we have the basic knowledge of matrix multiplication, modulo calculation, and the inverse calculation of matrices.</p>
+            <p>In hill cipher algorithm every letter (A-Z) is represented by a number moduli 26. Usually, the simple substitution scheme is used where A = 0, B = 1, C = 2…Z = 25 in order to use 2x2 key matrix.</p>
+            <p><b>Note:</b> The complexity of the algorithm increases with the size of the key matrix.</p>
+            <h3>How does Hill Cipher Work?</h3>
+            <h4>Encryption:</h4>
+            <p>To encrypt the text using hill cipher, we need to perform the following operation.</p>
+            <p style="text-align:center"><b>E(K, P) = (K * P) mod 26 </b></p>
+            <p>Where K is the key matrix and P is plain text in vector form. Matrix multiplication of K and P generates the encrypted ciphertext.</p>
+            <h4>Steps for Encryption</h4>
+            <p><b>Step 1:</b>  Let's say our key text (2x2) is DCDF. Convert this key using a substitution scheme into a 2x2 key matrix as shown below:</p>
+            <img src="./Images/hill1.png">
+            <p><b>Step 2:</b> Now, we will convert our plain text into vector form. Since the key matrix is 2x2, the vector must be 2x1 for matrix multiplication. (Suppose the key matrix is 3x3, a vector will be a 3x1 matrix.)</p>
+            <p>In our case, plain text is TEXT that is four letters long word; thus we can put in a 2x1 vector and then substitute as:</p>
+            <img src="./Images/hill2.png">
+            <p><b>Step 3:</b> Multiply the key matrix with each 2x1 plain text vector, and take the modulo of result (2x1 vectors) by 26. Then concatenate the results, and we get the encrypted or ciphertext as RGWL.</p>
+            <img src="./Images/hill3.png">
+            <h4>Decryption:</h4>
+            <p>To encrypt the text using hill cipher, we need to perform the following operation.</p>
+            <p style="text-align:center"><b>D(K, C) = (K-1  * C) mod 26  </b></p>
+            <p>Where K is the key matrix and C is the ciphertext in vector form. Matrix multiplication of inverse of key matrix K and ciphertext C generates the decrypted plain text.</p>
+            <h4>Steps for Decryption</h4>
+            <p><b>Step 1:</b> Calculate the inverse of the key matrix. First, we need to find the determinant of the key matrix (must be between 0-25). Here the Extended Euclidean algorithm is used to get modulo multiplicative inverse of key matrix determinant</p>
+            <img src="./Images/hill4.png">
+            <p><b>Step 2:</b> Now, we multiply the 2x1 blocks of ciphertext and the inverse of the key matrix. The resultant block after concatenation is the plain text that we have encrypted i.e., TEXT.</p>
+            <img src="./Images/hill5.png">
+            <h4>Example Input (Plain-text)– ACT</h4>
+            <h4>KEY- GYBNQKURP</h4>
+            <p>Explanation: We have to encrypt the message ‘ACT’ (n=3).The key is ‘GYBNQKURP’ which can be written as the nxn matrix: </p>
+            <img src="./Images/hill6.jpg">
+            <p>The message ‘ACT’ is written as vector: </p>
+            <img src="./Images/hill7.jpg">
+            <p>The enciphered vector is given as: </p>
+            <img src="./Images/hill8.jpg">
+            <p>which corresponds to ciphertext of ‘POH’ </p>
+            <h4>Example Output (Cipher-text)– POH</h4>
+        </div>
+    </div>
+    <div id="right-section" class="right-section">
+        <div class="black-container">
+            <h2 style="margin-right: auto; margin-bottom: 0; margin-top: 0;">Java Implementation</h2>
+            <button id="copyButton" onclick="copyCode()" style="margin-left: auto; margin-top: 0; margin-bottom: 0;">Copy Code</button>
+            <textarea id="codeTextarea" class="textArea">
+import java.util.*;
+import java.math.BigInteger;
+
+class Determinant 
+{
+    static int determinant(int[][] matrix) 
+    {
+        int determinant = 0;
+        if (matrix.length == 1) 
+        {
+            return matrix[0][0];
+        } 
+        else if (matrix.length == 2) 
+        {
+            return (matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0]);
+        } 
+        else {
+            for (int i = 0; i < matrix[0].length; i++) 
+            {
+                int[][] subMatrix = new int[matrix.length - 1][matrix[0].length - 1];
+                for (int m = 1; m < matrix.length; m++) 
+                {
+                    for (int n = 0; n < matrix[m].length; n++) 
+                    {
+                        if (n < i) 
+                        {
+                            subMatrix[m - 1][n] = matrix[m][n];
+                        } 
+                        else if (n > i) 
+                        {
+                            subMatrix[m - 1][n - 1] = matrix[m][n];
+                        }
+                    }
+                }
+                determinant += Math.pow(-1.0, 1.0 + i + 1.0) * matrix[0][i] * determinant(subMatrix);
+            }
+        }
+        return determinant;
+    }
+}
+
+class InverseMatrix 
+{
+    static int[][] inverse(int[][] matrix) 
+    {
+        int determinant = Determinant.determinant(matrix);
+        int determinantMod26 = Math.floorMod(determinant, 26);
+        int inverseDeterminant = BigInteger.valueOf(determinantMod26).modInverse(BigInteger.valueOf(26)).intValue();
+
+        int[][] adjoint = new int[matrix.length][matrix[0].length];
+        for (int i = 0; i < matrix.length; i++) 
+        {
+            for (int j = 0; j < matrix[0].length; j++) 
+            {
+                int[][] subMatrix = new int[matrix.length - 1][matrix[0].length - 1];
+                for (int m = 0; m < matrix.length; m++) 
+                {
+                    for (int n = 0; n < matrix[m].length; n++) 
+                    {
+                        if (m != i && n != j) 
+                        {
+                            subMatrix[m < i ? m : m - 1][n < j ? n : n - 1] = matrix[m][n];
+                        }
+                    }
+                }
+                adjoint[i][j] = (int) Math.pow(-1.0, i + j) * Determinant.determinant(subMatrix);
+            }
+        }
+
+        int[][] inverse = new int[matrix.length][matrix[0].length];
+        for (int i = 0; i < matrix.length; i++) 
+        {
+            for (int j = 0; j < matrix[0].length; j++) 
+            {
+                inverse[i][j] = Math.floorMod(adjoint[j][i] * inverseDeterminant, 26);
+            }
+        }
+
+        return inverse;
+    }
+}
+
+class Key 
+{
+    static int[][] create() 
+    {
+        Random r = new Random();
+        int[][] a = new int[3][3];
+
+        boolean validKey = false;
+        while (!validKey) 
+        {
+            for (int i = 0; i < 3; i++) 
+            {
+                for (int j = 0; j < 3; j++) 
+                {
+                    a[i][j] = r.nextInt(26);
+                }
+            }
+            int d = Determinant.determinant(a);
+            if (BigInteger.valueOf(d).gcd(BigInteger.valueOf(26)).intValue() == 1) 
+            {
+                if (Determinant.determinant(InverseMatrix.inverse(a)) != 0) 
+                {
+                    validKey = true;
+                }
+            }
+        }
+        return a;
+    }
+}
+
+class Cryptography 
+{
+    static char[] Alphabets = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+
+    static int[][] encrypt(int b[][]) 
+    {
+        System.out.println("Enter the Plain Text:");
+        Scanner sc = new Scanner(System.in);
+        String plain_text = sc.nextLine().toLowerCase().replaceAll("[^a-z]", "");
+        char[] plain_text_Array = plain_text.toCharArray();
+
+        int x = plain_text_Array.length;
+        int remainder = x % 3;
+        int padding_count = (remainder == 0) ? 0 : (3 - remainder);
+        char padding_char = 'z'; 
+
+        char[] padded_text_Array = new char[x + padding_count];
+        int padded_text_index = 0;
+        for (int i = 0; i < x; i++) 
+        {
+            padded_text_Array[padded_text_index++] = plain_text_Array[i];
+        }
+        for (int i = 0; i < padding_count; i++) 
+        {
+            padded_text_Array[padded_text_index++] = padding_char; 
+        }
+
+        int y = x + padding_count;
+        int[] v = new int[y];
+        for (int i = 0; i < y; i++) 
+        {
+            v[i] = padded_text_Array[i] - 'a';
+        }
+
+        int cipher_text_Array[] = new int[y];
+        int index = 0;
+        for (int k = 0; k < y; k += 3) 
+        {
+            for (int i = 0; i < 3; i++) 
+            {
+                int sum = 0;
+                for (int j = 0; j < 3; j++) 
+                {
+                    sum += b[i][j] * v[j + k];
+                }
+                cipher_text_Array[index++] = Math.floorMod(sum, 26);
+            }
+        }
+
+        System.out.println("The Cipher Text is:");
+        for (int i = 0; i < y; i++) 
+        {
+            System.out.print(Alphabets[cipher_text_Array[i]]);
+        }
+        System.out.println();
+
+        return new int[][]{cipher_text_Array, {padding_count}};
+    }
+
+    static void decrypt(int b[][]) 
+    {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the Cipher Text:");
+        String cipher_text = sc.nextLine().toLowerCase().replaceAll("[^a-z]", "");
+        char[] cipher_text_Array = cipher_text.toCharArray();
+        int x = cipher_text_Array.length;
+    
+        int inverseKey[][] = InverseMatrix.inverse(b); 
+    
+        if (inverseKey == null) 
+        {
+            System.out.println("The key is not invertible. Decryption is not possible.");
+            return;
+        }
+    
+        int decrypted_text_Array[] = new int[x];
+        for (int k = 0; k < x; k += 3) 
+        {
+            for (int i = 0; i < 3; i++) 
+            {
+                int sum = 0;
+                for (int j = 0; j < 3; j++) 
+                {
+                    if (j + k < x) 
+                    {
+                        sum += inverseKey[i][j] * (cipher_text_Array[j + k] - 'a');
+                    }
+                }
+                decrypted_text_Array[i + k] = Math.floorMod(sum, 26); 
+            }
+        }
+        int message_length = x; 
+    
+        if (decrypted_text_Array[message_length - 1] == 'z' - 'a') 
+        {
+            if (message_length == 1 || decrypted_text_Array[message_length - 2] != 'z' - 'a') 
+            {
+                message_length--; 
+            } 
+            else 
+            {
+                int numPaddingChars = 1; 
+    
+                while (message_length - 1 - numPaddingChars >= 0 && decrypted_text_Array[message_length - 1 - numPaddingChars] == 'z' - 'a') 
+                {
+                    numPaddingChars++;
+                }
+    
+                if (numPaddingChars > 1) 
+                {
+                    message_length -= numPaddingChars;
+                }
+            }
+        }
+    
+        System.out.println("The Decrypted Text is:");
+        for (int i = 0; i < message_length; i++) {
+            System.out.print(Alphabets[decrypted_text_Array[i]]);
+        }
+    
+        System.out.println();
+    }
+    
+}
+
+public class HillCipher 
+{
+    public static void main(String args[]) 
+    {
+        System.out.println("Enter your choice (encrypt or decrypt):");
+        Scanner sc = new Scanner(System.in);
+        String choice = (sc.nextLine()).toLowerCase();
+        if ("encrypt".equals(choice)) 
+        {
+            System.out.println("Do you have the key for encryption? (yes or no)");
+            String keyChoice = sc.nextLine();
+            if ("yes".equals(keyChoice)) 
+            {
+                System.out.println("Enter a 3x3 matrix key in alphabetical form:");
+                int[][] c = new int[3][3];
+        
+                for (int i = 0; i < 3; i++) 
+                {
+                    for (int j = 0; j < 3; j++) 
+                    {
+                        char ch = sc.next().charAt(0);
+                        c[i][j] = ch - 'a';
+                    }
+                }
+                sc.nextLine();  // consume the newline character
+        
+                int[][] encryptedData = Cryptography.encrypt(c);
+            }
+            else 
+            {
+                int[][] a = Key.create();
+                System.out.println("Randomly Generated Key is:");
+                for (int i = 0; i < 3; i++) 
+                {
+                    for (int j = 0; j < 3; j++) 
+                    {
+                        System.out.print((char)(a[i][j] + 'a') + " ");
+                    }
+                    System.out.println();
+                }
+                int[][] encryptedData = Cryptography.encrypt(a);
+            }
+        }
+        
+        if ("decrypt".equals(choice)) 
+        {
+            System.out.println("Do you have the key for decryption? (yes or no)");
+            String keyChoice = sc.nextLine();
+
+            if ("yes".equals(keyChoice)) 
+            {
+                System.out.println("Enter the key as a 3x3 matrix in alphabetical form:");
+                int[][] c = new int[3][3];
+                
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        char ch = sc.next().charAt(0);
+                        c[i][j] = ch - 'a';
+                    }
+                }
+                sc.nextLine();  // consume the newline character
+                
+                Cryptography.decrypt(c);
+            }
+        }
+    }
+}
+
+            </textarea>
+        </div>
+    </div>
+    <script>
+        function copyCode() {
+            var codeTextarea = document.getElementById('codeTextarea');
+            var code = codeTextarea.value;
+
+            navigator.clipboard.writeText(code).then(function() {
+                var copyButton = document.getElementById('copyButton');
+                copyButton.innerText = "Code Copied";
+
+                setTimeout(function() {
+                    copyButton.innerText = 'Copy Code';
+                }, 2000);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>            
+</body>
+</html>

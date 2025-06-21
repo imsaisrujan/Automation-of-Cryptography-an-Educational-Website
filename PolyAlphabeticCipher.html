@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolyAlphabetic Cipher</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html,body{
+            overflow-x: hidden;
+            overflow-y: auto;
+            scrollbar-width: auto;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        .toolbar {
+            color: black;
+            padding: 5px;
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            z-index: 2;
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: transparent;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background: transparent;
+        }
+        .left-section {
+            width: 50%;
+            height: 270vh;
+            background-color: #A9A9A9;
+            float: left;
+        }
+        .right-section {
+            width: 50%;
+            height: 270vh;
+            background-color: #000000;
+            float: right;
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .text-container {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: 20px;
+            max-width: 80%;
+            margin: 125px auto 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .text-container img {
+            max-width: 100%;
+            height: 250px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .text-container.condensed {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .text-container.slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        .black-container {
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            transition: max-width 0.5s;
+            text-align: left;
+            position: relative;
+            margin-top: 100px;
+        }
+
+        .black-container button {
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .black-container button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+		.new-container {
+            flex: 1;
+			color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            transition: max-width 0.5s;
+            margin: 10px;
+			overflow-y: hidden; 
+			overflow-x: hidden;
+			scrollbar-width: thin; 
+			scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        .textArea{
+            width: 100%; 
+            height: 1450px; 
+            resize: none; 
+            border: none; 
+            overflow: auto; 
+            padding: 10px; 
+            font-family: monospace; 
+            display: block; 
+            white-space: nowrap; 
+            color: white; 
+            background-color: #000000;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            color: white;
+        }
+        td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/logo.png" alt="AOC Logo" height="80px"></a>
+    </header>
+    <div class="toolbar">
+        <div class="dropdown">
+            <button id="techniques" class="dropbtn"><b>Cipher Techniques</b></button>
+            <div class="dropdown-content">
+                <a href="./substitution.html">Substitution Techniques</a>
+                <a href="./transposition.html">Transposition Techniques</a>
+                <a href="./modern.html">Modern Techniques</a>
+            </div>
+        </div>
+        <button id="tool">
+            <a href="./tool.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit;">
+                <b>Cipher Tool</b>
+            </a>
+        </button>
+    </div>
+    <div class="left-section">
+        <div class="text-container slab">
+            <h1>PolyAlphabetic Cipher</h1>
+            <p>A poly-alphabetic cipher is any cipher based on substitution, using several substitution alphabets. In polyalphabetic substitution ciphers, the plaintext letters are enciphered differently based upon their installation in the text. Rather than being a one-to-one correspondence, there is a one-to-many relationship between each letter and its substitutes.</p>
+            <p>For example, ‘a’ can be enciphered as ‘d’ in the starting of the text, but as ‘n’ at the middle. The polyalphabetic ciphers have the benefit of hiding the letter frequency of the basic language. Therefore attacker cannot use individual letter frequency static to divide the ciphertext.</p>
+            <p>As the name polyalphabetic recommend this is achieved by using multiple keys rather than only one key. This implies that the key should be a stream of subkeys, in which each subkey depends somehow on the position of the plaintext character that needs subkey for encipherment.</p>
+            <p>In other words, it is required to have s key stream k = (K1, K2, K3 ...) in which Ki is used to encipher the ith character in the plaintext to make the ith character in the ciphertext. The best known and simplest of such algorithm is defined as Vigenere cipher.</p>
+            <h3>How does Caesar Cipher Work?</h3>
+            <h4>Encryption:</h4>
+            <p>The first letter of the plaintext is combined with the first letter of the key. The column of plain text "J" and row of key "B" intersects the alphabet of "K" in the vigenere table, so the first letter of ciphertext is "K".</p>
+            <p>Similarly, the second letter of the plaintext is combined with the second letter of the key. The column of plain text "A" and row of key "E" intersects the alphabet of "E" in the vigenere table, so the second letter of ciphertext is "E".</p>
+            <p>This process continues continuously until the plaintext is finished.</p>
+            <img src="./Images/vigenere.png">
+            <p style="text-align:center">Vigenere Table</p>
+            <h4>Decryption:</h4>
+            <p>Decryption is done by the row of keys in the vigenere table. First, select the row of the key letter, find the ciphertext letter's position in that row, and then select the column label of the corresponding cipher text as the plaintext.</p>
+            <h4>Example Input (Plain-text)– AUTOMATION</h4>
+            <h4>KEY -SAI</h4>
+            <p>Explanation: Upon matching the plaintext and the key values from the vigenere table , we get</p>
+            <table>
+                <tr>
+                    <td>Plaintext</td><td>A</td><td>U</td><td>T</td><td>O</td><td>M</td><td>A</td><td>T</td><td>I</td><td>O</td><td>N</td>
+                </tr>
+                <tr>
+                    <td>KEY</td><td>S</td><td>A</td><td>I</td><td>S</td><td>A</td><td>I</td><td>S</td><td>A</td><td>I</td><td>S</td>
+                </tr>
+                <tr>
+                    <td>CIPHERTEXT</td><td>S</td><td>U</td><td>B</td><td>G</td><td>M</td><td>I</td><td>L</td><td>I</td><td>W</td><td>F</td>
+                </tr>
+            </table>
+            <h4>Example Output (Cipher-text)– SUBGMILIWF</h4>
+        </div>
+    </div>
+    <div id="right-section" class="right-section">
+        <div class="black-container">
+            <h2 style="margin-right: auto; margin-bottom: 0; margin-top: 0;">Java Implementation</h2>
+            <button id="copyButton" onclick="copyCode()" style="margin-left: auto; margin-top: 0; margin-bottom: 0;">Copy Code</button>
+            <textarea id="codeTextarea" class="textArea">
+import java.util.Scanner;
+
+class PolyAlphabeticCipher 
+{
+    static String generateKey(String str, String key) 
+    {
+        int x = str.length();
+                
+        for (int i = 0; ; i++) 
+        {
+            if (x == i)
+            {
+                i = 0;
+            }
+            if (key.length() == str.length())
+            {
+                break;
+            }
+            key += (key.charAt(i));
+        }
+        return key;
+    }
+                
+    static String cipherText(String str, String key) 
+    {
+        String cipher_text = "";
+                
+        for (int i = 0; i < str.length(); i++) 
+        {
+            int x = (str.charAt(i) + key.charAt(i)) % 26;
+            x += 'A';
+            cipher_text += (char)(x);
+        }
+        return cipher_text;
+    }
+                
+    static String originalText(String cipher_text, String key) 
+    {
+        String orig_text = "";
+                
+        for (int i = 0; i < cipher_text.length() && i < key.length(); i++) 
+        {
+            int x = (cipher_text.charAt(i) - key.charAt(i) + 26) % 26;
+            x += 'A';
+            orig_text += (char)(x);
+        }
+        return orig_text;
+    }
+                
+    static String LowerToUpper(String s) 
+    {
+        StringBuffer str = new StringBuffer(s);
+        for (int i = 0; i < s.length(); i++) 
+        {
+            if (Character.isLowerCase(s.charAt(i))) 
+            {
+                str.setCharAt(i, Character.toUpperCase(s.charAt(i)));
+            }
+        }
+        s = str.toString();
+        return s;
+    }
+                
+    public static void main(String[] args) 
+    {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter your choice (Encrypt/Decrypt):");
+        String choice = sc.nextLine().toLowerCase();
+        System.out.println("Enter the text:");
+        String Str = sc.nextLine();
+        System.out.println("Enter the Keyword:");
+        String Keyword = sc.nextLine();
+                
+        String str = LowerToUpper(Str);
+        String keyword = LowerToUpper(Keyword);
+                
+        String key = generateKey(str, keyword);
+                
+        if (choice.equals("encrypt")) 
+        {
+            String cipher_text = cipherText(str, key);
+            System.out.println("Ciphertext: " + cipher_text);
+        } 
+        else if (choice.equals("decrypt")) 
+        {
+            String original_text = originalText(str, key);
+            System.out.println("Decrypted Text: " + original_text);
+        } 
+        else 
+        {
+            System.out.println("Improper Choice");
+        }
+    }
+}             
+            </textarea>
+        </div>
+    </div>
+    <script>
+        function copyCode() {
+            var codeTextarea = document.getElementById('codeTextarea');
+            var code = codeTextarea.value;
+
+            navigator.clipboard.writeText(code).then(function() {
+                var copyButton = document.getElementById('copyButton');
+                copyButton.innerText = "Code Copied";
+
+                setTimeout(function() {
+                    copyButton.innerText = 'Copy Code';
+                }, 2000);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>            
+</body>
+</html>

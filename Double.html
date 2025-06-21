@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Double Columnar Transposition</title>
+    <link rel="icon" href="./Images/weblogo.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html,body{
+            overflow-x: hidden;
+            overflow-y: auto;
+            scrollbar-width: auto;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            color: black;
+            text-align: left;
+            padding: 10px 0;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        .toolbar {
+            color: black;
+            padding: 5px;
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            z-index: 2;
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: transparent;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background: transparent;
+        }
+        .left-section {
+            width: 50%;
+            height: 300vh;
+            background-color: #A9A9A9;
+            float: left;
+        }
+        .right-section {
+            width: 50%;
+            height: 300vh;
+            background-color: #000000;
+            float: right;
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .text-container {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            padding: 20px;
+            max-width: 80%;
+            margin: 125px auto 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .text-container img {
+            max-width: 100%;
+            height: 180px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .text-container.condensed {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        .text-container.slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        .black-container {
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            line-height: 1.5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            transition: max-width 0.5s;
+            text-align: left;
+            position: relative;
+            margin-top: 100px;
+        }
+
+        .black-container button {
+            color: white;
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .black-container button:hover {
+            background-color: transparent;
+            text-decoration: underline;
+        }
+		.new-container {
+            flex: 1;
+			color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            transition: max-width 0.5s;
+            margin: 10px;
+			overflow-y: hidden; 
+			overflow-x: hidden;
+			scrollbar-width: thin; 
+			scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        .textArea{
+            width: 100%; 
+            height: 1800px; 
+            resize: none; 
+            border: none; 
+            overflow: auto; 
+            padding: 10px; 
+            font-family: monospace; 
+            display: block; 
+            white-space: nowrap; 
+            color: white; 
+            background-color: #000000;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            color: white;
+        }
+        td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="./AOC.html" ><img src="./Images/logo.png" alt="AOC Logo" height="80px"></a>
+    </header>
+    <div class="toolbar">
+        <div class="dropdown">
+            <button id="techniques" class="dropbtn"><b>Cipher Techniques</b></button>
+            <div class="dropdown-content">
+                <a href="./substitution.html">Substitution Techniques</a>
+                <a href="./transposition.html">Transposition Techniques</a>
+                <a href="./modern.html">Modern Techniques</a>
+            </div>
+        </div>
+        <button id="tool">
+            <a href="./tool.html" target="_blank" rel="noreferrer noopener" style="text-decoration:none; color:inherit;">
+                <b>Cipher Tool</b>
+            </a>
+        </button>
+    </div>
+    <div class="left-section">
+        <div class="text-container slab">
+            <h1>Double Columnar Transposition</h1>
+            <p>Double Columnar Transposition is a classical encryption technique that involves applying two separate transposition ciphers sequentially to a plaintext message. This method increases the security of the encrypted message compared to a single transposition.</p>
+            <p>In the first transposition the plaintext is arranged into a grid or matrix, usually of a fixed size. The first transposition is performed by reordering the rows or columns according to a predetermined key.</p>
+            <p>IN the second transposition the resulting intermediate ciphertext from the first transposition is again arranged into a grid or matrix, and another round of transposition is applied using a different key. This second transposition further scrambles the positions of the characters.</p>
+            <h3>How does Double Columnar Transposition Cipher Work?</h3>
+            <h4>Encryption:</h4>
+            <ol>
+                <li>Write the plaintext message to be encrypted. If necessary, pad the plaintext to fit the matrix size.</li>
+                <li>For First Columnar Transposition choose a key (word or phrase) for the first transposition.Write the plaintext in a grid with a number of columns equal to the length of the key.Number the columns based on the alphabetical order of the key. Read the columns in the order specified by the key's alphabetical order to create the intermediate ciphertext.</li>
+                <li>For Second Columnar Transposition choose a second key for the second transposition.Write the intermediate ciphertext in a new grid with a number of columns equal to the length of the second key.Number the columns based on the alphabetical order of the second key.Read the columns in the order specified by the second key's alphabetical order to create the final ciphertext.</li>
+            </ol>
+            <h4>Decryption:</h4>
+            <ol>
+                <li>Write the ciphertext message to be decrypted.</li>
+                <li>For reversing First Columnar Transposition use the second key (used in the second transposition during encryption).Create a grid with the number of columns equal to the length of the second key.Number the columns based on the alphabetical order of the second key.Fill the grid column by column according to the order specified by the key's alphabetical order.Read the grid row by row to obtain the intermediate ciphertext.</li>
+                <li>For reversing Second Columnar Transposition use the first key (used in the first transposition during encryption).Create a grid with the number of columns equal to the length of the first key.Number the columns based on the alphabetical order of the first key.Fill the grid column by column according to the order specified by the key's alphabetical order.Read the grid row by row to obtain the plaintext.</li>
+            </ol>
+            <h4>Example Input (Plain-text)- WELCOMEHOME</h4>
+            <h4>KEY1 - ZEBRAS</h4>
+            <h4>KEY2 - MONKEY</h4>
+            <p></p>
+            <p>Explanation: The order of the key1 is 6 3 2 4 1 5.</p>
+            <table>
+                <tr>
+                    <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td>
+                </tr>
+                <tr>
+                    <td>W</td><td>E</td><td>L</td><td>C</td><td>O</td><td>M</td>
+                </tr>
+                <tr>
+                    <td>E</td><td>H</td><td>O</td><td>M</td><td>E</td>
+                </tr>
+            </table>
+            <p>Upon arranging the columns as per the key we get the intermediate cipher text as MLOEHCMWEOE.</p>
+            <p>Now the order of key2 is 3 5 4 2 1 6.</p>
+            <table>
+                <tr>
+                    <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td>
+                </tr>
+                <tr>
+                    <td>M</td><td>L</td><td>O</td><td>E</td><td>H</td><td>C</td>
+                </tr>
+                <tr>
+                    <td>M</td><td>W</td><td>E</td><td>O</td><td>E</td>
+                </tr>
+            </table>
+            <p>Upon arranging the columns as per the key we get the final cipher text as OHELMCWEOWM.</p>
+            <h4>Example Output (Cipher-text)–  OHELMCWEOWM</h4>
+        </div>
+    </div>
+    <div id="right-section" class="right-section">
+        <div class="black-container">
+            <h2 style="margin-right: auto; margin-bottom: 0; margin-top: 0;">Java Implementation</h2>
+            <button id="copyButton" onclick="copyCode()" style="margin-left: auto; margin-top: 0; margin-bottom: 0;">Copy Code</button>
+            <textarea id="codeTextarea" class="textArea">
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class DoubleColumnarTranspositionCipher 
+{
+    private static String columnarTransposition(String text, String key) 
+    {
+        int numRows = (int) Math.ceil((double) text.length() / key.length());
+        char[][] grid = new char[numRows][key.length()];
+
+        int k = 0;
+        for (int i = 0; i < numRows; i++) 
+        {
+            for (int j = 0; j < key.length(); j++) 
+            {
+                if (k < text.length()) 
+                {
+                    grid[i][j] = text.charAt(k++);
+                } 
+                else 
+                {
+                    grid[i][j] = 'X'; 
+                }
+            }
+        }
+
+        char[] sortedKey = key.toCharArray();
+        Arrays.sort(sortedKey);
+
+        StringBuilder cipherText = new StringBuilder();
+        for (char c : sortedKey) 
+        {
+            int col = key.indexOf(c);
+            for (int i = 0; i < numRows; i++) 
+            {
+                cipherText.append(grid[i][col]);
+            }
+        }
+        return cipherText.toString();
+    }
+
+    private static String columnarTranspositionDecrypt(String cipherText, String key) 
+    {
+        int numRows = (int) Math.ceil((double) cipherText.length() / key.length());
+        char[][] grid = new char[numRows][key.length()];
+
+        char[] sortedKey = key.toCharArray();
+        Arrays.sort(sortedKey);
+
+        int k = 0;
+        for (char c : sortedKey) 
+        {
+            int col = key.indexOf(c);
+            for (int i = 0; i < numRows; i++) 
+            {
+                grid[i][col] = cipherText.charAt(k++);
+            }
+        }
+
+        StringBuilder plainText = new StringBuilder();
+        for (int i = 0; i < numRows; i++) 
+        {
+            for (int j = 0; j < key.length(); j++) 
+            {
+                plainText.append(grid[i][j]);
+            }
+        }
+        return plainText.toString();
+    }
+
+    public static String doubleColumnarTranspositionEncrypt(String text, String key1, String key2) 
+    {
+        String firstPass = columnarTransposition(text, key1);
+        return columnarTransposition(firstPass, key2);
+    }
+
+ 
+    public static String doubleColumnarTranspositionDecrypt(String cipherText, String key1, String key2) 
+    {
+        String firstPass = columnarTranspositionDecrypt(cipherText, key2);
+        return columnarTranspositionDecrypt(firstPass, key1);
+    }
+
+    public static void main(String[] args) 
+    {
+        System.out.println("Enter your choice (encrypt or decrypt):");
+        Scanner sc = new Scanner(System.in);
+        String keychoice = (sc.nextLine()).toLowerCase();
+
+        System.out.println("Enter the text :");
+        String text = sc.nextLine();
+
+        System.out.println("Enter the first key:");
+        String key1 = sc.nextLine();
+
+        System.out.println("Enter the second key:");
+        String key2 = sc.nextLine();
+
+        if ("encrypt".equals(keychoice)) 
+        {
+            String encrypted = doubleColumnarTranspositionEncrypt(text, key1, key2);
+            System.out.println("Encrypted Text: " + encrypted);
+        }
+
+        else if ("decrypt".equals(keychoice)) 
+        {
+        String decrypted = doubleColumnarTranspositionDecrypt(text, key1, key2);
+        System.out.println("Decrypted Text: " + decrypted);
+        }
+    }
+}
+
+            </textarea>
+        </div>
+    </div>
+    <script>
+        function copyCode() {
+            var codeTextarea = document.getElementById('codeTextarea');
+            var code = codeTextarea.value;
+
+            navigator.clipboard.writeText(code).then(function() {
+                var copyButton = document.getElementById('copyButton');
+                copyButton.innerText = "Code Copied";
+
+                setTimeout(function() {
+                    copyButton.innerText = 'Copy Code';
+                }, 2000);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>            
+</body>
+</html>
